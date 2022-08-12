@@ -18,6 +18,7 @@ services:
     # Ubuntu
     image: mariadb
     container_name: "${APP_ID}-db"
+    hostname: "${APP_HOST}"
     restart: "no"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -35,6 +36,7 @@ services:
     # Alpine
     image: nginx:alpine
     container_name: "${APP_ID}-webserver"
+    hostname: "${APP_HOST}"
     restart: "no"
     volumes:
       - /root/bin/alpine:/root/bin/alpine:ro
@@ -57,6 +59,7 @@ services:
     # Alpine Linux
     image: wordpress:fpm-alpine
     container_name: "${APP_ID}-php"
+    hostname: "${APP_HOST}"
     restart: "no"
     environment:
       WORDPRESS_DB_HOST: ${APP_HOST}
