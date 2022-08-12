@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+
+echo ==  platypus-wordpress exec ==
+
+docker exec -it wordpress-01-webserver sh
+# docker exec -it wordpress-01-webserver bash
