@@ -36,6 +36,8 @@ services:
     image: nginx:alpine
     container_name: "${APP_ID}-webserver"
     restart: "no"
+    environment:
+      - NGINX_HOST=$APP_HOST
     volumes:
       - /root/bin/alpine:/root/bin/alpine:ro
       - ./context/root/bin:/root/bin:rw
