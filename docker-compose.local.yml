@@ -20,10 +20,10 @@ services:
     container_name: "${APP_ID}-db"
     restart: "no"
     environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_DATABASE: "${APP_ID}"
-      MYSQL_USER: "${APP_ID}"
-      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${APP_ID}
+      MYSQL_USER: ${APP_ID}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - 3306:3306
     volumes:
@@ -36,8 +36,6 @@ services:
     image: nginx:alpine
     container_name: "${APP_ID}-webserver"
     restart: "no"
-    environment:
-      - NGINX_HOST=$APP_HOST
     volumes:
       - /root/bin/alpine:/root/bin/alpine:ro
       - ./context/root/bin:/root/bin:rw
@@ -61,10 +59,10 @@ services:
     container_name: "${APP_ID}-php"
     restart: "no"
     environment:
-      WORDPRESS_DB_HOST: "${APP_HOST}"
-      WORDPRESS_DB_USER: "${APP_ID}"
-      WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
-      WORDPRESS_DB_NAME: "${APP_ID}"
+      WORDPRESS_DB_HOST: ${APP_HOST}
+      WORDPRESS_DB_USER: ${APP_ID}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${APP_ID}
     volumes:
       - /root/bin/alpine:/root/bin/alpine:ro
       - ./context/root/bin:/root/bin:rw
