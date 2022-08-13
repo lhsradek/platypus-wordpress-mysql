@@ -21,7 +21,6 @@
 | nginx:alpine          | wordpress-99-webpma       | pma.docker.wordpress.local
 | phpmyadmin:fpm-alpine | wordpress-99-pma          | pma.docker.wordpress.local
 | mariadb               | wordpress-99-db           | dba.docker.wordpress.local
-| traefik:v2.8          | platypus-box_traefik_1    |
 
 | VOLUME NAME
 | -----------------
