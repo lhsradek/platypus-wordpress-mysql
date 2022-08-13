@@ -14,14 +14,14 @@
 | nginx            | alpine     | 23.5MB
 | mariadb          | latest     | 383MB
 
-| IMAGE                 | COMMAND                | NAMES
-| --------------------- | ---------------------- | ------
-| nginx:alpine          | "/docker-entrypoint.…" | wordpress-99-webserver
-| nginx:alpine          | "/docker-entrypoint.…" | wordpress-99-webpma
-| phpmyadmin:fpm-alpine | "/docker-entrypoint.…" | wordpress-99-pma
-| mariadb               | "docker-entrypoint.s…" | wordpress-99-db
-| wordpress:fpm-alpine  | "docker-entrypoint.s…" | wordpress-99-php
-| traefik:v2.8          | "/entrypoint.sh trae…" | platypus-box_traefik_1
+| IMAGE                 | NAMES
+| --------------------- | ------
+| nginx:alpine          | wordpress-99-webserver
+| nginx:alpine          | wordpress-99-webpma
+| phpmyadmin:fpm-alpine | wordpress-99-pma
+| mariadb               | wordpress-99-db
+| wordpress:fpm-alpine  | wordpress-99-php
+| traefik:v2.8          | platypus-box_traefik_1
 
 | DRIVER    | VOLUME NAME
 | --------- | -----------
