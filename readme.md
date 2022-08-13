@@ -23,8 +23,8 @@
 | mariadb               | wordpress-99-db
 | traefik:v2.8          | platypus-box_traefik_1
 
-| DRIVER    | VOLUME NAME
-| --------- | -----------------
-| local     | wordpress-99
-| local     | wordpress-pma-99
-| local     | wordpress-db-99
+| VOLUME NAME
+| -----------------
+| wordpress-99
+| wordpress-pma-99
+| wordpress-db-99
