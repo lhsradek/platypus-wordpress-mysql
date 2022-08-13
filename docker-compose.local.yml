@@ -22,7 +22,8 @@ services:
     image: nginx:alpine
     container_name: "${APP_ID}-webserver"
     hostname: ${APP_HOST}
-    restart: "no"
+    # restart: "no"
+    restart: always
     volumes:
       - /root/bin/alpine:/root/bin/alpine:ro
       - ./context/root/bin:/root/bin:rw
@@ -45,7 +46,8 @@ services:
     image: nginx:alpine
     container_name: "${APP_ID}-webpma"
     hostname: ${APP_PMA}
-    restart: "no"
+    # restart: "no"
+    restart: always
     volumes:
       - /root/bin/alpine:/root/bin/alpine:ro
       - ./context/root/bin:/root/bin:rw
@@ -72,10 +74,9 @@ services:
     image: phpmyadmin:fpm-alpine
     container_name: "${APP_ID}-pma"
     hostname: ${APP_PMA}
-    restart: "no"
+    # restart: "no"
+    restart: always
     # restart: always
-    # ports:
-    #  - 9000:9000
     environment:
       - PMA_HOST=${DB_HOST}
       - PMA_ARBITRARY=0
@@ -93,7 +94,8 @@ services:
     image: wordpress:fpm-alpine
     container_name: "${APP_ID}-php"
     hostname: ${APP_HOST}
-    restart: "no"
+    # restart: "no"
+    restart: always
     environment:
       WORDPRESS_DB_HOST: ${DB_HOST}
       WORDPRESS_DB_USER: ${APP_ID}
@@ -113,7 +115,8 @@ services:
     image: mariadb
     container_name: "${APP_ID}-db"
     hostname: ${DB_HOST}
-    restart: "no"
+    # restart: "no"
+    restart: always
     # ports:
     #  - 3306:3306
     environment:
