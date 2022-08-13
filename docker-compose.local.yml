@@ -2,10 +2,10 @@ version: '3.1'
 
 volumes:
   mysql:
-    external: false
+    external: true
     name: "${NAME}-db-${NUM}"
   wordpress:
-    external: false
+    external: true
     name: "${APP_ID}"
   phpmyadmin:
     external: true
