@@ -117,7 +117,7 @@ services:
     # ports:
     #  - 3306:3306
     environment:
-      MYSQL_ROOT_HOST: ${DB_HOST}
+      # MYSQL_ROOT_HOST: ${DB_HOST}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${APP_ID}
       MYSQL_USER: ${APP_ID}
