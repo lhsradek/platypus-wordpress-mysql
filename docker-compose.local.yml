@@ -19,12 +19,14 @@ networks:
 services:
   nginx:
     # Alpine
-    image: nginx:alpine
-    # image: lhsradek/lhsdock:v3
+    # image: nginx:alpine
+    image: lhsradek/lhsdock:v3
     container_name: "${APP_ID}-webserver"
     hostname: ${APP_HOST}
     # restart: "no"
     restart: always
+    # ports:
+    #  - 4443:443
     volumes:
       - /root/bin/alpine:/root/bin/alpine:ro
       - ./context/root/bin:/root/bin:rw
@@ -47,13 +49,38 @@ services:
       - "traefik.http.routers.${APP_ID}-public.rule=Host(`${APP_HOST}`)"
       - "traefik.http.routers.${APP_ID}-public.entrypoints=https"
       - "traefik.http.routers.${APP_ID}-public.tls=true"
+      - "traefik.http.services.nginx-${APP_ID}.loadbalancer.server.scheme=https"
+      - "traefik.http.services.nginx-${APP_ID}.loadbalancer.server.port=443"
     links:
       - nginx-pwp
 
+  nginx-pwp:
+    # Alpine Linux
+    image: wordpress:fpm-alpine
+    container_name: "${APP_ID}-pwp"
+    hostname: ${APP_HOST}
+    # restart: "no"
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=${APP_ID}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
+      - WORDPRESS_DB_NAME=${APP_ID}
+      - HEADLESS_FRONTEND_URL=${HEADLESS_FRONTEND_URL}
+      - WP_HOME=https://${APP_HOST}
+    volumes:
+      - /root/bin/alpine:/root/bin/alpine:ro
+      - ./context/root/bin:/root/bin:rw
+      - wordpress:/var/www/html:rw
+      - type: bind
+        source: ./application/html/wordpress/wp-config.php
+        target: /var/www/html/wp-config.php
+        read_only: false
+
   nginx-webpma:
     # Alpine
-    image: nginx:alpine
-    # image: lhsradek/lhsdock:v3
+    # image: nginx:alpine
+    image: lhsradek/lhsdock:v3
     container_name: "${APP_ID}-webpma"
     hostname: "pma.${APP_HOST}"
     # restart: "no"
@@ -84,6 +111,8 @@ services:
       - "traefik.http.routers.${APP_ID}-webpma-public.rule=Host(`pma.${APP_HOST}`)"
       - "traefik.http.routers.${APP_ID}-webpma-public.entrypoints=https"
       - "traefik.http.routers.${APP_ID}-webpma-public.tls=true"
+      - "traefik.http.services.nginx-webpma-${APP_ID}.loadbalancer.server.scheme=https"
+      - "traefik.http.services.nginx-webpma-${APP_ID}.loadbalancer.server.port=443"
     links:
       - nginx-pma
 
@@ -107,39 +136,15 @@ services:
         target: /var/www/html/config.inc.php
         read_only: true
 
-  nginx-pwp:
-    # Alpine Linux
-    image: wordpress:fpm-alpine
-    container_name: "${APP_ID}-pwp"
-    hostname: ${APP_HOST}
-    # restart: "no"
-    restart: always
-    environment:
-      - WORDPRESS_DB_HOST=db
-      - WORDPRESS_DB_USER=${APP_ID}
-      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
-      - WORDPRESS_DB_NAME=${APP_ID}
-      - HEADLESS_FRONTEND_URL=${HEADLESS_FRONTEND_URL}
-      - WP_HOME=https://${APP_HOST}
-    volumes:
-      - /root/bin/alpine:/root/bin/alpine:ro
-      - ./context/root/bin:/root/bin:rw
-      - wordpress:/var/www/html:rw
-      - type: bind
-        source: ./application/html/wordpress/wp-config.php
-        target: /var/www/html/wp-config.php
-        read_only: false
-
   db:
     # Ubuntu
     image: mariadb
     container_name: "${APP_ID}-db"
-    hostname: db.${APP_HOST}
+    hostname: "db.${APP_HOST}"
     # restart: "no"
     restart: always
     # ports:
     #  - 3306:3306
-
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${APP_ID}
