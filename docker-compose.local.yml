@@ -19,8 +19,8 @@ networks:
 services:
   nginx:
     # Alpine
-    # image: nginx:alpine
-    image: lhsradek/lhsdock:v3
+    image: nginx:alpine
+    # image: lhsradek/lhsdock:v3
     container_name: "${APP_ID}-webserver"
     hostname: ${APP_HOST}
     # restart: "no"
@@ -79,8 +79,8 @@ services:
 
   nginx-webpma:
     # Alpine
-    # image: nginx:alpine
-    image: lhsradek/lhsdock:v3
+    image: nginx:alpine
+    # image: lhsradek/lhsdock:v3
     container_name: "${APP_ID}-webpma"
     hostname: "pma.${APP_HOST}"
     # restart: "no"
