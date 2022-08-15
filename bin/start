@@ -40,13 +40,11 @@ fi
 
 ARGS="-f $rootPath/docker-compose.$RUNENV.yml"
 # ARGS="-f $rootPath/docker-compose.$RUNENV.yml --verbose"
-# ARGS="-f $rootPath/docker-compose.$RUNENV.yml --log-level=DEBUG"
+# ARGS="-f $rootPath/docker-compose.$RUNENV.yml --verbose --log-level=DEBUG"
 
 if [[ -f "$rootPath/docker-compose.extras.yml" ]]
 then
     ARGS="$ARGS -f $rootPath/docker-compose.extras.yml"
 fi
 
-docker-compose ${ARGS} pull
-docker-compose ${ARGS} up -d
-
+docker-compose ${ARGS} pull && docker-compose ${ARGS} up -d
