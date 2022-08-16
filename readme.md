@@ -27,3 +27,12 @@
 | wordpress-99
 | wordpress-pma-99
 | wordpress-db-99
+
+example:
+| TCP Connections (Source Host:Port)    |      Packets    |    Bytes  |  Flag   |  Iface
+| ------------------------------------- | --------------- | --------- | ------- | -------
+|┌172.18.0.9:37000                      |    =       26   |     3036  |  CLOSE  |  eth0
+|└172.18.0.3:443                        |    =       24   |    29881  |  CLOSE  |  eth0
+|┌172.18.0.3:40928                      |    =        5   |     1652  |  CLOSE  |  eth0
+|└172.18.0.2:9000                       |    =        5   |     4388  |  CLOSE  |  eth0
+

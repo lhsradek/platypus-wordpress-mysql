@@ -37,11 +37,11 @@ services:
         read_only: true
       - type: bind
         source: ./extras/nginx/pki/${CERTNAME}.pem
-        target: /etc/ssl/private/cert.pem
+        target: /etc/ssl/private/cacert.pem
         read_only: true
       - type: bind
         source: ./extras/nginx/pki/${CERTNAME}-key.pem
-        target: /etc/ssl/private/cert-key.pem
+        target: /etc/ssl/private/cacert-key.pem
         read_only: true
     labels:
       - "traefik.enable=true"
@@ -95,11 +95,11 @@ services:
         read_only: true
       - type: bind
         source: ./extras/nginx/pki/${CERTNAME}.pem
-        target: /etc/ssl/private/cert.pem
+        target: /etc/ssl/private/cacert.pem
         read_only: true
       - type: bind
         source: ./extras/nginx/pki/${CERTNAME}-key.pem
-        target: /etc/ssl/private/cert-key.pem
+        target: /etc/ssl/private/cacert-key.pem
         read_only: true
       - type: bind
         source: ./application/html/pma/config.inc.php
