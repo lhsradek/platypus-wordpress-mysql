@@ -49,8 +49,8 @@ services:
       - "traefik.http.routers.${APP_ID}-public.rule=Host(`${APP_HOST}`)"
       - "traefik.http.routers.${APP_ID}-public.entrypoints=https"
       - "traefik.http.routers.${APP_ID}-public.tls=true"
-      - "traefik.http.services.nginx-${APP_ID}.loadbalancer.server.scheme=https"
-      - "traefik.http.services.nginx-${APP_ID}.loadbalancer.server.port=443"
+      # - "traefik.http.services.nginx-${APP_ID}.loadbalancer.server.scheme=https"
+      # - "traefik.http.services.nginx-${APP_ID}.loadbalancer.server.port=443"
     links:
       - nginx-pwp
 
@@ -111,8 +111,8 @@ services:
       - "traefik.http.routers.${APP_ID}-webpma-public.rule=Host(`pma.${APP_HOST}`)"
       - "traefik.http.routers.${APP_ID}-webpma-public.entrypoints=https"
       - "traefik.http.routers.${APP_ID}-webpma-public.tls=true"
-      - "traefik.http.services.nginx-webpma-${APP_ID}.loadbalancer.server.scheme=https"
-      - "traefik.http.services.nginx-webpma-${APP_ID}.loadbalancer.server.port=443"
+      # - "traefik.http.services.nginx-webpma-${APP_ID}.loadbalancer.server.scheme=https"
+      # - "traefik.http.services.nginx-webpma-${APP_ID}.loadbalancer.server.port=443"
     links:
       - nginx-pma
 
