@@ -5,7 +5,6 @@ application/html/frontend/
 application/html/wordpress/bedrock/
 application/html/wordpress/plugin/
 application/html/wordpress/theme/
-application/html/wordpress/wp-includes/
 cli/
 lib/
 package.json
