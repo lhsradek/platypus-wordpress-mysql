@@ -15,6 +15,9 @@ networks:
   default:
     external: true
     name: ${DOCKER_NETWORK}
+  intnet:
+    external: false
+    name: ${INT_NETWORK}
 
 services:
   nginx:
@@ -27,6 +30,9 @@ services:
     restart: always
     # ports:
     #  - 4443:443
+    networks:
+      - default
+      - intnet
     volumes:
       - /root/bin/alpine:/root/bin/alpine:ro
       - ./context/root/bin:/root/bin:rw
@@ -58,13 +64,13 @@ services:
     # Alpine Linux
     image: wordpress:fpm-alpine
     container_name: "${APP_ID}-pwp"
-    hostname: ${APP_HOST}
+    hostname: "${APP_ID}-pwp.${INT_NETWORK}"
     # restart: "no"
     restart: always
     environment:
-      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_HOST=${APP_ID}-db.${INT_NETWORK}
       - WORDPRESS_DB_USER=${APP_ID}
-      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
+      - WORDPRESS_DB_PASSWORD=${WP_DB_PASSWORD}
       - WORDPRESS_DB_NAME=${APP_ID}
       - HEADLESS_FRONTEND_URL=${HEADLESS_FRONTEND_URL}
       - WP_HOME=https://${APP_HOST}
@@ -76,6 +82,8 @@ services:
         source: ./application/html/wordpress/wp-config.php
         target: /var/www/html/wp-config.php
         read_only: false
+    networks:
+      - intnet
 
   nginx-webpma:
     # Alpine
@@ -85,6 +93,9 @@ services:
     hostname: "pma.${APP_HOST}"
     # restart: "no"
     restart: always
+    networks:
+      - intnet
+      - default
     volumes:
       - /root/bin/alpine:/root/bin/alpine:ro
       - ./context/root/bin:/root/bin:rw
@@ -120,13 +131,15 @@ services:
     # Alpine
     image: phpmyadmin:fpm-alpine
     container_name: "${APP_ID}-pma"
-    hostname: "pma.${APP_HOST}"
+    hostname: "${APP_ID}-pma.${INT_NETWORK}"
     # restart: "no"
     restart: always
     # restart: always
     environment:
-      - PMA_HOST=db
+      - PMA_HOST=${APP_ID}-db.${INT_NETWORK}
       - PMA_ARBITRARY=0
+    networks:
+      - default
     volumes:
       - /root/bin/alpine:/root/bin/alpine:ro
       - ./context/root/bin:/root/bin:rw
@@ -140,16 +153,18 @@ services:
     # Ubuntu
     image: mariadb
     container_name: "${APP_ID}-db"
-    hostname: "db.${APP_HOST}"
+    hostname: "${APP_ID}-db.${INT_NETWORK}"
     # restart: "no"
     restart: always
     # ports:
     #  - 3306:3306
+    networks:
+      - default
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${WP_DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${APP_ID}
       MYSQL_USER: ${APP_ID}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PASSWORD: ${WP_DB_PASSWORD}
     volumes:
       - /root/bin/ubuntu:/root/bin/ubuntu:ro
       - ./context/root/bin:/root/bin:rw
