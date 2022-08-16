@@ -41,16 +41,16 @@ if (!function_exists('getenv_docker')) {
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', getenv_docker('WORDPRESS_DB_NAME', 'APP_ID') );
+define( 'DB_NAME', $_ENV['WORDPRESS_DB_NAME'] );
 
 /** Database username */
-define( 'DB_USER', getenv_docker('WORDPRESS_DB_USER', 'APP_ID') );
+define( 'DB_USER', $_ENV['WORDPRESS_DB_USER'] );
 
 /** Database password */
-define( 'DB_PASSWORD', getenv_docker('WORDPRESS_DB_PASSWORD', 'MYSQL_PASSWORD') );
+define( 'DB_PASSWORD', $_ENV['WORDPRESS_DB_PASSWORD'] );
 
 /** Database hostname */
-define( 'DB_HOST', getenv_docker('WORDPRESS_DB_HOST', 'DB_HOST') );
+define( 'DB_HOST', $_ENV['WORDPRESS_DB_HOST'] );
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', getenv_docker('WORDPRESS_DB_CHARSET', 'utf8') );
@@ -64,8 +64,9 @@ define( 'DB_COLLATE', getenv_docker('WORDPRESS_DB_COLLATE', '') );
  * (However, using "example username" and "example password" in your database is strongly discouraged.  Please use strong, random credentials!)
  */
 
-define( 'WP_HOME', getenv_docker('WP_HOME', '') );
-# define( 'HEADLESS_FRONTEND_URL', getenv_docker('HEADLESS_FRONTEND_URL', '') );
+define( 'WP_HOME', $_ENV['WP_HOME'] );
+
+define( 'HEADLESS_FRONTEND_URL', $_ENV['HEADLESS_FRONTEND_URL'] );
 
 /**#@+
  * Authentication unique keys and salts.
@@ -117,7 +118,8 @@ define( 'WP_DEBUG', !!getenv_docker('WORDPRESS_DEBUG', '') );
 // If we're behind a proxy server and using HTTPS, we need to alert WordPress of that fact
 // see also https://wordpress.org/support/article/administration-over-ssl/#using-a-reverse-proxy
 
-define('FORCE_SSL_ADMIN', true);
+# define('FORCE_SSL_ADMIN', true);
+define('FORCE_SSL_ADMIN', false);
 // in some setups HTTP_X_FORWARDED_PROTO might contain 
 // a comma-separated list e.g. http,https
 // so check for https existence
@@ -140,3 +142,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /** Sets up WordPress vars and included files. */
 require_once ABSPATH . 'wp-settings.php';
+
