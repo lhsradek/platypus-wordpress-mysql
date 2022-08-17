@@ -17,7 +17,6 @@
 | IMAGE                 | NAMES                     | HOSTNAME
 | --------------------- | --------------------------| ---------------------------
 | nginx:alpine          | wordpress-99-webwp        | docker.wordpress.local
-| nginx:alpine          | wordpress-99-webwps       | docker.wordpress.local
 | nginx:alpine          | wordpress-99-webpma       | pma.docker.wordpress.local
 | wordpress:fpm-alpine  | wordpress-99-php          | docker.wordpress.local
 | phpmyadmin:fpm-alpine | wordpress-99-pma          | pma.docker.wordpress.local
