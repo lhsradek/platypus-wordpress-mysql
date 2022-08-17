@@ -114,14 +114,6 @@ services:
         target: /etc/nginx/conf.d/default.conf
         read_only: true
       - type: bind
-        source: ./extras/nginx/pki/${CERTNAME}.pem
-        target: /etc/ssl/private/cacert.pem
-        read_only: true
-      - type: bind
-        source: ./extras/nginx/pki/${CERTNAME}-key.pem
-        target: /etc/ssl/private/cacert-key.pem
-        read_only: true
-      - type: bind
         source: ./application/html/pma/config.inc.php
         target: /var/www/html/config.inc.php
         read_only: true
