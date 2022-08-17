@@ -145,18 +145,9 @@ services:
       - /root/bin/alpine:/root/bin/alpine:ro
       - ./context/root/bin:/root/bin:rw
       - wordpress:/var/www/html:rw
-      - type: bind
-        source: ./application/html/wordpress/wp-config.php
-        target: /var/www/html/wp-config.php
-        read_only: false
-      - type: bind
-        source: ./application/html/wordpress/wp-includes/class-wp-http.php
-        target: /var/www/html/wp-includes/class-wp-http.php
-        read_only: false
-      - type: bind
-        source: ./application/html/wordpress/wp-includes/update.php
-        target: /var/www/html/wp-includes/update.php
-        read_only: false
+        # - ./application/html/wordpress/wp-config.php:/var/www/html/wp-config.php:rw
+        # - ./application/html/wordpress/wp-includes/class-wp-http.php:/var/www/html/wp-includes/class-wp-http.php:rw
+        # - ./application/html/wordpress/wp-includes/update.php:/var/www/html/wp-includes/update.php:rw
     networks:
       - intnet
 
