@@ -106,7 +106,6 @@ services:
     hostname: "pma-php.${INT_NETWORK}"
     # restart: "no"
     restart: always
-    # restart: always
     environment:
       - PMA_HOST=db.${INT_NETWORK}
       - PMA_ARBITRARY=0
