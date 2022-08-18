@@ -2,5 +2,5 @@
 
 echo ==  platypus-wordpress exec ==
 
-docker exec -it wordpress-01-webserver sh
-# docker exec -it wordpress-01-webserver bash
+docker exec -it wordpress-99-webwp sh
+# docker exec -it wordpress-99-webwp-php sh
