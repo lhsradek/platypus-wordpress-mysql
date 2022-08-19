@@ -5,30 +5,36 @@
 2) run docker ```bin/start```
 
 
-| REPOSITORY       |  TAG       | SIZE
-| ---------------- | ---------- | -------
-| wordpress        | fpm-alpine | 299MB
-| phpmyadmin       | fpm-alpine | 128MB
-| php              | fpm-alpine | 73.4MB
-| nginx            | alpine     | 23.5MB
-| mariadb          | latest     | 383MB
-| traefik          | v2.8       | 107MB
+| REPOSITORY       |  TAG         | SIZE
+| ---------------- | ------------ | -------
+| wordpress        | fpm-alpine   | 299MB
+| phpmyadmin       | fpm-alpine   | 128MB
+| php              | fpm-alpine   | 73.4MB
+| nginx            | alpine       | 23.5MB
+| redis            | alpine       | 28.5MB
+| mariadb          | ubuntu       | 383MB
+| traefik          | v2.8         | 107MB
 
-| IMAGE                 | NAMES                     | HOSTNAME
-| --------------------- | --------------------------| ---------------------------
-| nginx:alpine          | wordpress-99-webwp        | docker.wordpress.local
-| nginx:alpine          | wordpress-99-webpma       | pma.docker.wordpress.local
-| wordpress:fpm-alpine  | wordpress-99-php          | docker.wordpress.local
-| phpmyadmin:fpm-alpine | wordpress-99-pma          | pma.docker.wordpress.local
-| mariadb               | wordpress-99-db           | dba.docker.wordpress.local
+
+| IMAGE                 | NAMES                | SERVICES    | HOSTNAMES
+| --------------------- | -------------------- | ----------- | ----------
+| nginx:alpine          | wordpress-99-webwp   | webwp       | webwp
+| nginx:alpine          | wordpress-99-webpma  | webpma      | pma
+| wordpress:fpm-alpine  | wordpress-99-php     | webwp-php   | webwp-php
+| phpmyadmin:fpm-alpine | wordpress-99-pma     | wepma-php   | pma-php
+| mariadb:ubuntu        | wordpress-99-db      | db          | db
+| redis:alpine          | wordpress-99-redis   | redis       | redis
+
 
 | VOLUME NAME
-| -----------------
-| wordpress-99
+| --------------------
+| wordpress-wp-99
 | wordpress-pma-99
 | wordpress-db-99
+| wordpress-redis-99
 
-example:
+
+Example of connection:
 | TCP Connections (Source Host:Port)    |      Packets    |    Bytes  |  Flag   |  Iface
 | ------------------------------------- | --------------- | --------- | ------- | -------
 |┌172.18.0.9:37000                      |    =       26   |     3036  |  CLOSE  |  eth0
