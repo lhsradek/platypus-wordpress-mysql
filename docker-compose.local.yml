@@ -1,21 +1,24 @@
 version: '3.9'
 
 volumes:
-  mysql:
-    external: true
-    name: "${NAME}-db-${NUM}"
   wordpress:
     external: true
-    name: "${APP_ID}"
+    name: "${NAME}-wp-${NUM}"
   phpmyadmin:
     external: true
     name: "${NAME}-pma-${NUM}"
+  mysql:
+    external: true
+    name: "${NAME}-db-${NUM}"
+  redis:
+    external: true
+    name: "${NAME}-redis-${NUM}"
 
 networks:
   default:
     external: true
     name: ${DOCKER_NETWORK}
-  # common intranet network:
+  # local network:
   intnet:
     external: false
     name: ${INT_NETWORK}
@@ -26,7 +29,8 @@ services:
     image: nginx:alpine
     # image: lhsradek/lhsdock:v3
     container_name: "${APP_ID}-webwp"
-    hostname: "webwp.${INT_NETWORK}"
+    hostname: "webwp"
+    # hostname: "webwp.${INT_NETWORK}"
     # restart: "no"
     restart: always
     # ports:
@@ -34,6 +38,7 @@ services:
     networks:
       # for traefik:
       - default
+      # local network:
       - intnet
     volumes:
       # - /root/bin/alpine:/root/bin/alpine:ro
@@ -53,40 +58,19 @@ services:
       # - "traefik.http.services.webwp-platypus-${NAME}-mysql.loadbalancer.server.scheme=https"
       # - "traefik.http.services.webwp-platypus-${NAME}-mysql.loadbalancer.server.port=443"
 
-  webwp-php:
-    # Alpine WORDPRESS-php
-    image: wordpress:fpm-alpine
-    container_name: "${APP_ID}-webwp-php"
-    hostname: "webwp-php.${INT_NETWORK}"
-    # restart: "no"
-    restart: always
-    environment:
-      - WORDPRESS_DB_HOST=db.${INT_NETWORK}
-      - WORDPRESS_DB_NAME=${APP_ID}
-      - WORDPRESS_DB_USER=${APP_ID}
-      - WORDPRESS_DB_PASSWORD=${WP_DB_PASSWORD}
-      - HEADLESS_FRONTEND_URL=${HEADLESS_FRONTEND_URL}
-      - |
-        WORDPRESS_CONFIG_EXTRA=
-        define( 'WP_HOME', "${WP_HOME}" );
-        define( 'WP_SITEURL', "${WP_HOME}" );
-    networks:
-      - intnet
-    volumes:
-      # - /root/bin/alpine:/root/bin/alpine:ro
-      - wordpress:/var/www/html:rw
-
   webpma:
     # Alpine phpMyAdmin
     image: nginx:alpine
     # image: lhsradek/lhsdock:v3
     container_name: "${APP_ID}-webpma"
-    hostname: "pma.${APP_HOST}"
+    hostname: "pma"
+    # hostname: "pma.${APP_HOST}"
     # restart: "no"
     restart: always
     networks:
       # for traefik:
       - default
+      # local network:
       - intnet
     volumes:
       # - /root/bin/alpine:/root/bin/alpine:ro
@@ -99,33 +83,87 @@ services:
       - "traefik.http.routers.${APP_ID}-webpma-public.entrypoints=https"
       - "traefik.http.routers.${APP_ID}-webpma-public.tls=true"
 
+  webwp-php:
+    # Alpine WORDPRESS-php
+    image: wordpress:fpm-alpine
+    container_name: "${APP_ID}-webwp-php"
+    hostname: "webwp-php"
+    # hostname: "webwp.${INT_NETWORK}"
+    # restart: "no"
+    restart: always
+    environment:
+      # - WORDPRESS_DB_HOST=db.${INT_NETWORK}
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_NAME=${APP_ID}
+      - WORDPRESS_DB_USER=${APP_ID}
+      - WORDPRESS_DB_PASSWORD=${WP_DB_PASSWORD}
+      - WORDPRESS_ABSPATH=/var/www/html/wordpress
+      - HEADLESS_FRONTEND_URL=${HEADLESS_FRONTEND_URL}
+      - |
+        WORDPRESS_CONFIG_EXTRA=
+        define( 'WP_HOME', "${WP_HOME}" );
+        define( 'WP_SITEURL', "${WP_HOME}" );
+        define( 'WP_ENVIRONMENT_TYPE', "${ENVIRONMENT_TYPE}" );
+        define( 'WP_REDIS_HOST', "redis");
+    networks:
+      # local network:
+      - intnet
+    volumes:
+      # - /root/bin/alpine:/root/bin/alpine:ro
+      - wordpress:/var/www/html:rw
+
   webpma-php:
     # Alpine phpMyAdmin-php
     image: phpmyadmin:fpm-alpine
     container_name: "${APP_ID}-webpma-php"
-    hostname: "pma-php.${INT_NETWORK}"
+    hostname: "pma-php"
+    # hostname: "pma"
+    # hostname: "webpma.${INT_NETWORK}"
+    # hostname: "pma.${APP_HOST}"
     # restart: "no"
     restart: always
     environment:
-      - PMA_HOST=db.${INT_NETWORK}
+      # - PMA_HOST=db.${INT_NETWORK}
+      - PMA_HOST=db
       - PMA_ARBITRARY=0
     networks:
+      # local network:
       - intnet
     volumes:
-      # -  /root/bin/alpine:/root/bin/alpine:ro
+    # -  /root/bin/alpine:/root/bin/alpine:ro
       - ./application/html/pma/config.inc.php:/var/www/html/config.inc.php:ro
       - phpmyadmin:/var/www/html:rw
 
+  redis:
+    image: redis:7.0.4-alpine
+    # Alpine Linux
+    container_name: "${APP_ID}-redis"
+    hostname: "redis"
+    # hostname: "redis.${INT_NETWORK}"
+    restart: always
+    networks:
+      # local network:
+      - intnet
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    # ports:
+    # - 6379:6379
+    volumes:
+      - ./extras/etc/sysctl.conf:/etc/sysctl.conf:rw
+      - redis:/data:rw
+        
   db:
     # Ubuntu - db 
     image: mariadb
     container_name: "${APP_ID}-db"
-    hostname: "db.${INT_NETWORK}"
+    hostname: "db"
+    # hostname: "db.${INT_NETWORK}"
     # restart: "no"
     restart: always
     # ports:
     #  - 3306:3306
     networks:
+      # local network:
       - intnet
     environment:
       MYSQL_ROOT_PASSWORD: ${WP_DB_ROOT_PASSWORD}
@@ -135,3 +173,4 @@ services:
     volumes:
       # - /root/bin/ubuntu:/root/bin/ubuntu:ro
       - mysql:/var/lib/mysql
+
