@@ -10,9 +10,9 @@ volumes:
   mysql:
     external: true
     name: "${NAME}-db-${NUM}"
-# redis:
-#   external: true
-#   name: "${NAME}-redis-${NUM}"
+  redis:
+    external: true
+    name: "${NAME}-redis-${NUM}"
 
 networks:
   default:
@@ -135,21 +135,21 @@ services:
       # - /root/bin/ubuntu:/root/bin/ubuntu:ro
       - mysql:/var/lib/mysql
 
-#   redis:
-#     image: redis:7.0.4-alpine
-#     # Alpine Linux
-#     container_name: "${APP_ID}-redis"
-#     hostname: "redis"
-#     # hostname: "redis.${INT_NETWORK}"
-#     restart: always
-#     networks:
-#       # local network:
-#       - intnet
-#     environment:
-#       - ALLOW_EMPTY_PASSWORD=yes
-#     # ports:
-#     # - 6379:6379
-#     volumes:
-#       - ./extras/etc/sysctl.conf:/etc/sysctl.conf:rw
-#       - ./extras/etc/sysctl.d/sysctl.conf:/etc/sysctl.d/sysctl.conf:rw
-#       - redis:/data:rw
+  redis:
+    image: redis:7.0.4-alpine
+    # Alpine Linux
+    container_name: "${APP_ID}-redis"
+    hostname: "redis"
+    # hostname: "redis.${INT_NETWORK}"
+    restart: always
+    networks:
+      # local network:
+      - intnet
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    # ports:
+    # - 6379:6379
+    volumes:
+      - ./extras/etc/sysctl.conf:/etc/sysctl.conf:rw
+      - ./extras/etc/sysctl.d/sysctl.conf:/etc/sysctl.d/sysctl.conf:rw
+      - redis:/data:rw
