@@ -16,14 +16,13 @@
 | traefik          | v2.8         | 107MB
 
 
-| IMAGE                 | NAMES                | SERVICES    | HOSTNAMES
-| --------------------- | -------------------- | ----------- | ----------
-| nginx:alpine          | wordpress-99-webwp   | webwp       | webwp
-| nginx:alpine          | wordpress-99-webpma  | webpma      | pma
-| wordpress:fpm-alpine  | wordpress-99-php     | webwp-php   | webwp-php
-| phpmyadmin:fpm-alpine | wordpress-99-pma     | wepma-php   | pma-php
-| mariadb:ubuntu        | wordpress-99-db      | db          | db
-| redis:alpine          | wordpress-99-redis   | redis       | redis
+| IMAGE                 | NAMES                | SERVICES     | HOSTNAMES
+| --------------------- | -------------------- | ------------ | ----------
+| nginx:alpine          | wordpress-99-webwp   | webwp,webpma | webwp
+| wordpress:fpm-alpine  | wordpress-99-php     | webwp-php    | webwp-php
+| phpmyadmin:fpm-alpine | wordpress-99-pma     | wepma-php    | pma-php
+| mariadb:ubuntu        | wordpress-99-db      | db           | db
+| redis:alpine          | wordpress-99-redis   | redis        | redis
 
 
 | VOLUME NAME
