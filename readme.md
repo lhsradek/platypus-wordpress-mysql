@@ -1,4 +1,4 @@
-# Wordpress for platypus box with mysql and phpMyAdmin
+# Wordpress for platypus box with mysql, phpMyAdmin and Redis
 
 ## Setup
 1) create .env file ```cp .env.dist .env```

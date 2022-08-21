@@ -1,11 +1,4 @@
 .env
-extras/nginx/pki/
-Makefile
-application/html/frontend/
-application/html/wordpress/bedrock/
-application/html/wordpress/plugin/
-application/html/wordpress/theme/
-cli/
-lib/
-package.json
-
+certs/
+logs/wordpress-mysql/
+logs/wordpress-nginx/
