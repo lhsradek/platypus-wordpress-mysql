@@ -27,8 +27,8 @@ services:
 
   webwp:
     # Alpine WORDPRESS
-    image: lhsradek/lhsdock:v3
-    # image: nginx:alpine
+    # image: lhsradek/lhsdock:v3
+    image: nginx:alpine
     container_name: "${APP_ID}-webwp"
     # hostname: "webwp"
     hostname: "webwp.${INT_NETWORK}"
@@ -45,7 +45,7 @@ services:
       #  -  /root/bin/alpine:/root/bin/alpine:ro
       - wordpress:/var/www/html/wp:rw
       - phpmyadmin:/var/www/html/pma:rw
-      - ./logs/wordpress-nginx:/var/log/nginx
+      - ./logs/wordpress-nginx:/var/log/nginx:rw
       # for http
       - ./extras/nginx/default-http.conf:/etc/nginx/conf.d/default.conf:ro
       # for https
@@ -135,7 +135,7 @@ services:
       # - /root/bin/ubuntu:/root/bin/ubuntu:ro
       - mysql:/var/lib/mysql:rw
       - ./extras/etc/mysql/mariadb.conf.d/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf:ro
-      - ./logs/wordpress-mysql:/var/log/mysql
+      - ./logs/wordpress-mysql:/var/log/mysql:rw
       - ./certs/rootCA.pem:/etc/mysql/cacert.pem:ro
       - ./certs/${CERTNAME}.pem:/etc/mysql/server-cert.pem:ro
       - ./certs/${CERTNAME}-key.pem:/etc/mysql/server-key.pem:ro
@@ -156,7 +156,7 @@ services:
     # - 6379:6379
     volumes:
       # -  /root/bin/alpine:/root/bin/alpine:ro
-      - ./extras/etc/sysctl.conf:/etc/sysctl.conf:rw
+      - ./extras/etc/sysctl.conf:/etc/sysctl.conf:ro
       # - ./extras/var/lib/sysctl.d/00-alpine.conf:/var/lib/sysctl.d/00-alpine.conf:rw
       - redis:/data:rw
       - ./certs/${CERTNAME}.pem:/etc/ssl/private/cacert.pem:ro
