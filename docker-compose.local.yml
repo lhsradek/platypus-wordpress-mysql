@@ -27,7 +27,7 @@ services:
       # local network:
       - intnet
     volumes:
-      #  -  /root/bin/alpine:/root/bin/alpine:ro
+      # - /root/bin/alpine:/root/bin/alpine:ro
       - wordpress:/var/www/html/wp:rw
       - phpmyadmin:/var/www/html/pma:rw
       - adminer:/var/www/html/ad:rw
@@ -71,7 +71,7 @@ services:
       # local network:
       - intnet
     volumes:
-      # -  /root/bin/alpine:/root/bin/alpine:ro
+      # - /root/bin/alpine:/root/bin/alpine:ro
       - wordpress:/var/www/html:rw
       - ./application/html/favicon.ico:/var/www/html/favicon.ico:rw
       - ./certs/${CERTNAME}.pem:/etc/ssl/private/cacert.pem:ro
