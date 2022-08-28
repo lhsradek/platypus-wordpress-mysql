@@ -16,4 +16,5 @@ $i++;
 /* Authentication type */
 /* Server parameters */
 $cfg['Servers'][$i]['ssl'] = true;
-$cfg['Servers'][$i]['ssl_verify'] = false;
+$cfg['Servers'][$i]['ssl_ca'] = '/certs/cacert.pem';
+# $cfg['Servers'][$i]['ssl_verify'] = false;

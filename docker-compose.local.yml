@@ -93,7 +93,8 @@ services:
     volumes:
       # - /root/bin/alpine:/root/bin/alpine:ro
       - phpmyadmin:/var/www/html:rw
-      - ./application/pma/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
+      - ./extras/pma/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
+      - ./certs/rootCA.pem:/certs/cacert.pem:ro
       # - ./application/html/phpinfo.php:/var/www/html/phpinfo.php:rw
 
   db:
