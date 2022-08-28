@@ -91,7 +91,7 @@ services:
       # local network:
       - intnet
     volumes:
-      - /root/bin/alpine:/root/bin/alpine:ro
+      # - /root/bin/alpine:/root/bin/alpine:ro
       - phpmyadmin:/var/www/html:rw
       - ./application/pma/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
       # - ./application/html/phpinfo.php:/var/www/html/phpinfo.php:rw
