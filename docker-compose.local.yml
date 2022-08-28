@@ -41,7 +41,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=${DOCKER_NETWORK}"
-      - "traefik.http.routers.webwp-${NUM}-public.rule=Host(`${APP_HOST}`, `ad.${APP_HOST}`, `${WP_PHP_MY_ADMIN_HOST}`)"
+      - "traefik.http.routers.webwp-${NUM}-public.rule=Host(`${APP_HOST}`, `${WP_PHP_MY_ADMIN_HOST}`)"
       - "traefik.http.routers.webwp-${NUM}-public.entrypoints=https"
       - "traefik.http.routers.webwp-${NUM}-public.tls=true"
       # for https
@@ -92,35 +92,10 @@ services:
       # local network:
       - intnet
     volumes:
-      # -  /root/bin/alpine:/root/bin/alpine:ro
+      - /root/bin/alpine:/root/bin/alpine:ro
       - phpmyadmin:/var/www/html:rw
-      - ./application/pma/config.inc.php:/var/www/html/config.inc.php:ro
-      - ./certs/rootCA.pem:/certs/ca.pem:ro
-      - ./certs/${CERTNAME}.pem:/certs/cacert.pem:ro
-      - ./certs/${CERTNAME}-key.pem:/certs/cacert-key.pem:ro
+      - ./application/pma/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
       # - ./application/html/phpinfo.php:/var/www/html/phpinfo.php:rw
-
-  webad-php:
-    # Alpine
-    image: adminer:fastcgi
-    container_name: "${APP_ID}-webad-php"
-    hostname: "webad-php.${INT_NETWORK}"
-    restart: ${DOCKER_RESTART_POLICY}
-    environment:
-      ADMINER_DEFAULT_SERVER: "db"
-      DB_SSL_KEY: '/certs/client-key.pem'
-      DB_SSL_CERT: '/certs/client-cert.pem'
-      DB_SSL_CA: '/certs/cacert.pem'
-    networks:
-      # for traefik:
-      # - default
-      # local network:
-      - intnet
-    volumes:
-      - adminer:/var/www/html:rw
-      - ./certs/rootCA.pem:/certs/cacert.pem:ro
-      - ./certs/${CERTNAME}.pem:/certs/client.pem:ro
-      - ./certs/${CERTNAME}-key.pem:/certs/client-key.pem:ro
 
   db:
     # Ubuntu - db 
