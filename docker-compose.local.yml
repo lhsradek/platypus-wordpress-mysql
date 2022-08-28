@@ -105,7 +105,7 @@ services:
     image: adminer:fastcgi
     container_name: "${APP_ID}-webad-php"
     hostname: "webad-php.${INT_NETWORK}"
-    restart: "no"
+    restart: ${DOCKER_RESTART_POLICY}
     environment:
       ADMINER_DEFAULT_SERVER: "db"
       DB_SSL_KEY: '/certs/client-key.pem'
