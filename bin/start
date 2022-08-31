@@ -47,12 +47,4 @@ then
     ARGS="$ARGS -f $rootPath/docker-compose.extras.yml"
 fi
 
-rm -f certs/ca.zip
-rm -f certs/certs.zip
-rm -f certs/instance.yml
-rm -f certs/ca/*
-rm -f certs/es01/*
-rmdir certs/ca
-rmdir certs/es01
-
 docker-compose ${ARGS} pull && docker-compose ${ARGS} up -d
