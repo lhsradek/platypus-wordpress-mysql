@@ -145,7 +145,6 @@ services:
       # -  /root/bin/alpine:/root/bin/alpine:ro
       - ./extras/etc/sysctl.conf:/etc/sysctl.conf:ro
       # - ./extras/var/lib/sysctl.d/00-alpine.conf:/var/lib/sysctl.d/00-alpine.conf:rw
-      - redis:/data:rw
       # for ssl
       # - ./certs/rootCA.pem:/etc/ssl/private/cacert.pem:ro
       # - ./certs/${CERTNAME}.pem:/etc/ssl/private/server-cert.pem:ro
@@ -161,6 +160,3 @@ volumes:
   mysql:
     external: true
     name: "${NAME}-db-${NUM}"
-  redis:
-    external: false
-    name: "${NAME}-redis-${NUM}"
