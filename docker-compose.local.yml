@@ -27,7 +27,6 @@ services:
       # local network:
       - intnet
     volumes:
-      # - /root/bin/alpine:/root/bin/alpine:ro
       - wordpress:/var/www/html/wp:rw
       - phpmyadmin:/var/www/html/pma:rw
       - ./logs/wordpress-nginx:/var/log/nginx:rw
@@ -71,7 +70,6 @@ services:
       # local network:
       - intnet
     volumes:
-      # - /root/bin/alpine:/root/bin/alpine:ro
       - wordpress:/var/www/html:rw
       # - ./certs/rootCA.pem:/var/www/html/wp-includes/certificates/rootCA.pem:ro
       # - ./application/html/favicon.ico:/var/www/html/favicon.ico:rw
@@ -91,7 +89,6 @@ services:
       # local network:
       - intnet
     volumes:
-      # - /root/bin/alpine:/root/bin/alpine:ro
       - phpmyadmin:/var/www/html:rw
       # for ssl
       # - ./extras/pma/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
@@ -117,7 +114,6 @@ services:
       MYSQL_PASSWORD: ${WP_DB_PASSWORD}
       MYSQL_INITDB_SKIP_TZINFO: "true"
     volumes:
-      # - /root/bin/ubuntu:/root/bin/ubuntu:ro
       - mysql:/var/lib/mysql:rw
       - ./logs/wordpress-mysql:/var/log/mysql:rw
       - ./extras/etc/mysql/mariadb.conf.d/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf:ro
@@ -142,13 +138,9 @@ services:
     # ports:
     # - 6379:6379
     volumes:
-      # -  /root/bin/alpine:/root/bin/alpine:ro
       - ./extras/etc/sysctl.conf:/etc/sysctl.conf:ro
       # - ./extras/var/lib/sysctl.d/00-alpine.conf:/var/lib/sysctl.d/00-alpine.conf:rw
-      # for ssl
-      # - ./certs/rootCA.pem:/etc/ssl/private/cacert.pem:ro
-      # - ./certs/${CERTNAME}.pem:/etc/ssl/private/server-cert.pem:ro
-      # - ./certs/${CERTNAME}.key:/etc/ssl/private/server-cert-key.pem:ro
+      - redis:/data:rw
 
 volumes:
   wordpress:
@@ -160,3 +152,6 @@ volumes:
   mysql:
     external: true
     name: "${NAME}-db-${NUM}"
+  redis:
+    external: true
+    name: "${NAME}-redis-${NUM}"
