@@ -1,4 +1,4 @@
-#### Wordpress for platypus box with mysql, phpMyAdmin, Redis and Redis commander
+#### Wordpress for platypus box with mysql, phpMyAdmin, Redis and Redis Commander
 
 ### Setup
 
