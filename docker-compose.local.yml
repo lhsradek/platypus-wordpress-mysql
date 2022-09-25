@@ -11,6 +11,9 @@ networks:
 
 services:
   webwp:
+    depends_on:
+      webrc:
+        condition: service_healthy
     # Alpine WORDPRESS
     image: lhsradek/lhsdock:v3
     # image: nginx:alpine
@@ -59,6 +62,30 @@ services:
       interval: 10s
       timeout: 20s
       retries: 50
+
+  webrc:
+    image: rediscommander/redis-commander:latest
+    container_name: "${APP_ID}-webrc"
+    hostname: "webrc.${INT_NETWORK}"
+    # build: .
+    restart: ${DOCKER_RESTART_POLICY}
+    networks:
+      # for traefik:
+      - default
+      # local network:
+      - intnet
+    environment:
+      - REDIS_HOSTS=redis
+    #ports:
+    # - "8081:8081"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${DOCKER_NETWORK}"
+      - "traefik.http.routers.webrc-${NUM}-public.rule=Host(`rc.${APP_HOST}`)"
+      - "traefik.http.routers.webrc-${NUM}-public.entrypoints=https"
+      - "traefik.http.routers.webrc-${NUM}-public.tls=true"
+      - "traefik.http.services.webrc-platypus-${APP_ID}.loadbalancer.server.port=8081"
+      - "traefik.http.services.webrc-platypus-${APP_ID}.loadbalancer.server.scheme=http"
 
   webwp-php:
     # Alpine WORDPRESS-php
@@ -154,6 +181,7 @@ services:
     # - 6379:6379
     volumes:
       - ./extras/etc/sysctl.conf:/etc/sysctl.conf:ro
+      - ./extras/redis/redis.conf:/usr/local/etc/redis/redis.conf
       # - ./extras/var/lib/sysctl.d/00-alpine.conf:/var/lib/sysctl.d/00-alpine.conf:rw
       - redis:/data:rw
 
