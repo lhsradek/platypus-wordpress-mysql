@@ -1,9 +1,9 @@
-# Wordpress for platypus box with mysql, phpMyAdmin and Redis
+#### Wordpress for platypus box with mysql, phpMyAdmin and Redis
 
-## Setup
+### Setup
 
-# create .env file ```cp .env.dist .env```
-# run docker ```bin/start```
+* create .env file ```cp .env.dist .env```
+* run docker ```bin/start```
 
 
 | REPOSITORY       |  TAG         | SIZE
