@@ -12,8 +12,8 @@ networks:
 services:
   webwp:
     # Alpine WORDPRESS
-    image: lhsradek/lhsdock:v3
-    # image: nginx:alpine
+    # image: lhsradek/lhsdock:v3
+    image: nginx:alpine
     container_name: "${APP_ID}-webwp"
     # hostname: "webwp"
     hostname: "webwp.${INT_NETWORK}"
