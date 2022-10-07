@@ -11,11 +11,10 @@ networks:
 
 services:
   webwp:
-    # Alpine WORDPRESS
+    # Alpine
     # image: lhsradek/lhsdock:v3
     image: nginx:alpine
     container_name: "${APP_ID}-webwp"
-    # hostname: "webwp"
     hostname: "webwp.${INT_NETWORK}"
     restart: ${DOCKER_RESTART_POLICY}
     # ports:
