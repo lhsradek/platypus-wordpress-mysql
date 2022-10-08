@@ -17,9 +17,9 @@ declare(strict_types=1);
 $i++;
 /* Authentication type */
 /* Server parameters */
-$cfg['Servers'][$i]['ssl'] = false;
-# $cfg['Servers'][$i]['ssl'] = true;
-# $cfg['Servers'][$i]['ssl_ca'] = '/etc/phpmyadmin/cacert.pem';
-# $cfg['Servers'][$i]['ssl_cert'] = '/etc/phpmyadmin/cert.pem';
-# $cfg['Servers'][$i]['ssl_key'] = '/etc/phpmyadmin/cert-key.pem';
-# $cfg['Servers'][$i]['ssl_verify'] = false;
+# $cfg['Servers'][$i]['ssl'] = false;
+$cfg['Servers'][$i]['ssl'] = true;
+$cfg['Servers'][$i]['ssl_ca'] = '/etc/phpmyadmin/cacert.pem';
+$cfg['Servers'][$i]['ssl_cert'] = '/etc/phpmyadmin/cert.pem';
+$cfg['Servers'][$i]['ssl_key'] = '/etc/phpmyadmin/cert-key.pem';
+$cfg['Servers'][$i]['ssl_verify'] = true;

@@ -29,27 +29,19 @@ services:
       # The first mount add bash and ping to nginx:alpine - lhsradek/lhsdock this dont'n need, see:
       # https://github.com/lhsradek/platypus-lhsdock/blob/main/context/Dockerfile of lhsradek/lhsdock:v3
       - ./extras/nginx/add.sh:/docker-entrypoint.d/05-add-packages.sh
-      - wordpress:/var/www/html/wp:rw
-      - phpmyadmin:/var/www/html/pma:rw
       - ./logs/wordpress-nginx:/var/log/nginx:rw
-      # for http
-      # - ./extras/nginx/default-http.conf:/etc/nginx/conf.d/default.conf:ro
-      # for https
       - ./extras/nginx/default-https.conf:/etc/nginx/conf.d/default.conf:ro
-      # for ssl
       - ./certs/ca.crt:/etc/ssl/private/ca.pem:ro
       - ./certs/${CERTNAME}.crt:/etc/ssl/private/cacert.pem:ro
       - ./certs/${CERTNAME}.key:/etc/ssl/private/cacert-key.pem:ro
+      - wordpress:/var/www/html/wp:rw
+      - phpmyadmin:/var/www/html/pma:rw
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=${DOCKER_NETWORK}"
       - "traefik.http.routers.webwp-${NUM}-public.rule=Host(`${APP_HOST}`, `${WP_PHP_MY_ADMIN_HOST}`)"
       - "traefik.http.routers.webwp-${NUM}-public.entrypoints=https"
       - "traefik.http.routers.webwp-${NUM}-public.tls=true"
-      # if http
-      # - "traefik.http.services.weblhs-platypus-${APP_ID}.loadbalancer.server.port=80"
-      # - "traefik.http.services.weblhs-platypus-${APP_ID}.loadbalancer.server.scheme=http"
-      # else https
       - "traefik.http.services.weblhs-platypus-${APP_ID}.loadbalancer.server.port=443"
       - "traefik.http.services.weblhs-platypus-${APP_ID}.loadbalancer.server.scheme=https"
       # fi
@@ -67,13 +59,13 @@ services:
     hostname: "webwp-php.${INT_NETWORK}"
     restart: ${DOCKER_RESTART_POLICY}
     environment:
-      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_HOST=db.${APP_HOST}
       - WORDPRESS_DB_NAME=${APP_ID}
       - WORDPRESS_DB_USER=${APP_ID}
       - WORDPRESS_DB_PASSWORD=${WP_DB_PASSWORD}
-      # define( 'MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL ); 
       - |
         WORDPRESS_CONFIG_EXTRA=
+        define( 'MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL ); 
         define( 'WP_HOME', "${WP_HOME}" );
         define( 'WP_SITEURL', "${WP_HOME}" );
         define( 'WP_ENVIRONMENT_TYPE', "${ENVIRONMENT_TYPE}" );
@@ -82,42 +74,39 @@ services:
       # local network:
       - intnet
     volumes:
+      - ./certs/ca.crt:/var/www/html/wp-includes/certificates/rootCA.crt:ro
+      # - ./certs/${CERTNAME}.crt:/var/www/html/wp-includes/certificates/${APP_HOST}.crt:ro
+      # - ./certs/${CERTNAME}.key:/var/www/html/wp-includes/certificates/${APP_HOST}.key:ro
       - wordpress:/var/www/html:rw
-      # - ./certs/ca.crt:/var/www/html/wp-includes/certificates/rootCA.crt:ro
-      # - ./application/html/favicon.ico:/var/www/html/favicon.ico:rw
-      # - ./application/html/phpinfo.php:/var/www/html/phpinfo.php:rw
 
   webpma-php:
     # Alpine phpMyAdmin-php
     image: phpmyadmin:fpm-alpine
     container_name: "${APP_ID}-webpma-php"
-    hostname: "webpma-php.${INT_NETWORK}"
+    hostname: "pma.${APP_HOST}"
     restart: ${DOCKER_RESTART_POLICY}
     environment:
-      - PMA_HOST=db
+      - PMA_HOST=db.${APP_HOST}
       - PMA_ARBITRARY=0
       - UPLOAD_LIMIT=1280M
     networks:
       # local network:
       - intnet
     volumes:
-      - phpmyadmin:/var/www/html:rw
-      # for ssl
       - ./extras/pma/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
       - ./certs/ca.crt:/etc/phpmyadmin/cacert.pem:ro
       - ./certs/${PMA_CERTNAME}.crt:/etc/phpmyadmin/cert.pem:ro
       - ./certs/${PMA_CERTNAME}.key:/etc/phpmyadmin/cert-key.pem:ro
-      # - ./application/html/phpinfo.php:/var/www/html/phpinfo.php:rw
+      - phpmyadmin:/var/www/html:rw
 
   db:
     # Ubuntu - db 
     image: mariadb
     container_name: "${APP_ID}-db"
-    # hostname: "db"
-    hostname: "db"
+    hostname: "db.${APP_HOST}"
     restart: ${DOCKER_RESTART_POLICY}
-    # ports:
-    #  - 3306:3306
+    ports:
+      - 3306:3306
     networks:
       # local network:
       - intnet
@@ -128,21 +117,19 @@ services:
       MYSQL_PASSWORD: ${WP_DB_PASSWORD}
       MYSQL_INITDB_SKIP_TZINFO: "true"
     volumes:
-      - mysql:/var/lib/mysql:rw
       - ./logs/wordpress-mysql:/var/log/mysql:rw
-      - ./extras/etc/mysql/mariadb.conf.d/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf:ro
-      # for ssl
-      # - ./extras/etc/mysql/mariadb.conf.d/50-server-ssl.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf:ro
-      # - ./certs/ca.crt:/etc/mysql/cacert.pem:ro
-      # - ./certs/${DB_CERTNAME}.crt:/etc/mysql/server-cert.pem:ro
-      # - ./certs/${DB_CERTNAME}.key:/etc/mysql/server-key.pem:ro
+      - ./extras/etc/mysql/mariadb.conf.d/50-server-ssl.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf:ro
+      - ./certs/ca.crt:/etc/mysql/cacert.pem:ro
+      - ./certs/${DB_CERTNAME}.crt:/etc/mysql/server-cert.pem:ro
+      - ./certs/${DB_CERTNAME}.key:/etc/mysql/server-key.pem:ro
+      - mysql:/var/lib/mysql:rw
 
   redis:
     # Alpine Linux
-    image: redis:7.0.4-alpine
+    image: redis:7-alpine
     container_name: "${APP_ID}-redis"
-    hostname: "redis"
     # hostname: "redis.${INT_NETWORK}"
+    hostname: "redis"
     restart: ${DOCKER_RESTART_POLICY}
     networks:
       # local network:
@@ -152,9 +139,12 @@ services:
     # ports:
     # - 6379:6379
     volumes:
-      - ./extras/etc/sysctl.conf:/etc/sysctl.conf:ro
-      - ./extras/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      # - ./extras/etc/sysctl.conf:/etc/sysctl.conf:ro
+      # - ./extras/redis/redis.conf:/usr/local/etc/redis/redis.conf
       # - ./extras/var/lib/sysctl.d/00-alpine.conf:/var/lib/sysctl.d/00-alpine.conf:rw
+      # - ./certs/ca.crt:/etc/ssl/private/ca.crt:ro
+      # - ./certs/${REDIS_CERTNAME}.crt:/etc/ssl/private/cacert.crt:ro
+      # - ./certs/${REDIS_CERTNAME}.key:/etc/ssl/private/cacert.key:ro
       - redis:/data:rw
 
 #       
@@ -163,7 +153,7 @@ services:
 #   webwp-rc:
 #     image: rediscommander/redis-commander:latest
 #     container_name: "${APP_ID}-webrc"
-#     hostname: "webrc.${INT_NETWORK}"
+#     hostname: "rc.${APP_HOST}"
 #     # build: .
 #     restart: ${DOCKER_RESTART_POLICY}
 #     networks:
@@ -183,7 +173,7 @@ services:
 #       - "traefik.http.routers.webwp-rc-${NUM}-public.tls=true"
 #       - "traefik.http.services.webwp-rc-platypus-${APP_ID}.loadbalancer.server.port=8081"
 #       - "traefik.http.services.webwp-rc-platypus-${APP_ID}.loadbalancer.server.scheme=http"
- 
+   
 volumes:
   wordpress:
     external: true
