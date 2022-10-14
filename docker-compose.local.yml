@@ -8,6 +8,10 @@ networks:
   intnet:
     external: false
     name: ${INT_NETWORK}
+  # for elastic
+  nginxnet:
+    external: true
+    name: "nginx.local"
 
 services:
   webwp:
@@ -52,13 +56,29 @@ services:
       retries: 50
 
   webwp-php:
-    # Alpine WORDPRESS-php
-    image: wordpress:fpm-alpine
+    # Alpine WORDPRESS-php for install or update
+    # image: wordpress:fpm-alpine
+    # with elastic-apm-php agent https://www.elastic.co/guide/en/apm/agent/php/current/intro.html
+    # https://github.com/lhsradek/platypus-lhsfpm/blob/main/context/Dockerfile
+    # for https://github.com/lhsradek/platypus-lhsdock
+    image: lhsradek/fpm:v1
     container_name: "${APP_ID}-webwp-php"
     # hostname: "webwp-php"
     hostname: "webwp-php.${INT_NETWORK}"
     restart: ${DOCKER_RESTART_POLICY}
+    networks:
+      # local network:
+      - intnet
+      # for elastic apm
+      - nginxnet
     environment:
+      - ELASTIC_APM_ENVIRONMENT=${STAGE}
+      - ELASTIC_APM_HOSTNAME=webwp-php.${INT_NETWORK}
+      - ELASTIC_APM_LOG_LEVEL_STDERR=info
+      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      - ELASTIC_APM_SERVER_URL=http://apm.nginx.local:8200
+      - ELASTIC_APM_SERVICE_NAME=${APP_ID}
+      - ELASTIC_APM_SERVICE_NODE_NAME=wp.${APP_HOST}
       - WORDPRESS_DB_HOST=db.${APP_HOST}
       - WORDPRESS_DB_NAME=${APP_ID}
       - WORDPRESS_DB_USER=${APP_ID}
@@ -70,9 +90,6 @@ services:
         define( 'WP_SITEURL', "${WP_HOME}" );
         define( 'WP_ENVIRONMENT_TYPE', "${ENVIRONMENT_TYPE}" );
         define( 'WP_REDIS_HOST', "redis" );
-    networks:
-      # local network:
-      - intnet
     volumes:
       - ./certs/ca.crt:/var/www/html/wp-includes/certificates/rootCA.crt:ro
       # - ./certs/${CERTNAME}.crt:/var/www/html/wp-includes/certificates/${APP_HOST}.crt:ro
@@ -80,7 +97,7 @@ services:
       - wordpress:/var/www/html:rw
 
   webpma-php:
-    # Alpine phpMyAdmin-php
+    # Alpine phpMyAdmin
     image: phpmyadmin:fpm-alpine
     container_name: "${APP_ID}-webpma-php"
     hostname: "pma.${APP_HOST}"
@@ -110,6 +127,8 @@ services:
     networks:
       # local network:
       - intnet
+      # for elastic beats
+      - nginxnet
     environment:
       MYSQL_ROOT_PASSWORD: ${WP_DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${APP_ID}
@@ -134,6 +153,8 @@ services:
     networks:
       # local network:
       - intnet
+      # for elastic beats
+      - nginxnet
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     # ports:
