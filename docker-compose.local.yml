@@ -49,11 +49,11 @@ services:
       - "traefik.http.services.weblhs-platypus-${APP_ID}.loadbalancer.server.port=443"
       - "traefik.http.services.weblhs-platypus-${APP_ID}.loadbalancer.server.scheme=https"
       # fi
-    healthcheck:
-      test: "curl -s -I http://localhost/nginx_status | grep -q 'HTTP/1.1 200 OK'"
-      interval: 10s
-      timeout: 20s
-      retries: 50
+    # healthcheck:
+    #  test: "curl -s -I http://localhost/nginx_status | grep -q 'HTTP/1.1 200 OK'"
+    #  interval: 10s
+    #  timeout: 20s
+    #  retries: 50
 
   webwp-php:
     # Alpine WORDPRESS-php for install or update
