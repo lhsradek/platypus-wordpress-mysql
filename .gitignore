@@ -1,4 +1,3 @@
 .env
 certs/
-logs/wordpress-mysql/
-logs/wordpress-nginx/
+logs/
