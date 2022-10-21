@@ -1,4 +1,4 @@
-#### Wordpress for platypus box with mysql, phpMyAdmin, Redis and connection to Elasticsearch in [platypus-lhsdock](https://github.com/lhsradek/platypus-lhsdock)
+#### Wordpress for platypus box with MySQL (MariaDB), phpMyAdmin, Redis and connection to Elasticsearch in [platypus-lhsdock](https://github.com/lhsradek/platypus-lhsdock)
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/lhsradek/fpm)](https://hub.docker.com/repository/docker/lhsradek/fpm) in [platypus-lhsfpm](https://github.com/lhsradek/platypus-lhsfpm)
 
