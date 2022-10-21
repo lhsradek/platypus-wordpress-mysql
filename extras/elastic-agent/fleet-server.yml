@@ -8,70 +8,15 @@ http.port: 5066
 
 logging:
   to_stderr: true # Force the logging output to stderr
-  #level: trace
+  level: trace
 
 fleet:
   hosts:
-    - 'https://fleet.${APP_NET}:8220'
+    - 'https://fleet.wordpress.local:8220'
   agent:
-    id: 1e4954ce-af37-4731-9f4a-407b08e69e42
-    logging:
-      level: '${LOG_LEVEL:DEBUG}'
+    id: fb41b289-10cf-40c7-94fb-ee854e748e1e
 
-inputs:
-  - type: fleet-server
-    server:
-      host: fleet.${APP_NET}
-      port: 8220
-      timeouts:
-        checkin_long_poll: 300s # long poll timeout
-      instrumentation:
-        enabled: false
-        hosts: ["apm.${APP_NET}:8200"]
-      profiler:
-        enabled: true # enable profiler
-      limits:
-        policy_throttle: 100ms
-        max_connetions: 150
-          checkin_limit:
-            interval: 100ms
-            burst: 25
-            max: 100
-          artifact_limit:
-            interval: 10ms
-            burst: 5
-            max: 10
-          ack_limit:
-            interval: 10ms
-            burst: 20
-            max: 10
-          enroll_limit:
-            interval: 50ms
-            burst: 10
-            max: 8
-        ssl:
-          enabled: true
-          certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
-          certificate: "${FLEET_SERVER_CERT}"
-          key: "${FLEET_SERVER_CERT_KEY}"
-    cache:
-      num_counters: 500000  # 10x times expected count
-      max_cost: 50 * 1024 * 1024  # 50MiB cache size
-  - id: fleet-server-fleet_server-355ad670-3f44-5a97-acbe-0ed8fa655332
-    name: fleet_server-1
-    revision: 1
-    type: fleet-server
-    use_output: default
-    meta:
-      package:
-        name: fleet_server
-        version: 1.2.0
-    data_stream:
-      namespace: default
-    server:
-      port: 8220
-      host: 0.0.0.0
-
+id: ${FLEET_SERVER_POLICY_ID}
 outputs:
   elasticsearch:
     hosts: 
@@ -81,7 +26,9 @@ outputs:
     protocol: "https"
     username: "${ELASTICSEARCH_USERNAME}"
     password: "${ELASTICSEARCH_PASSWORD}"
-    #service_token: '${ELASTICSEARCH_SERVICE_TOKEN}'
+    # service_token: '${FLEET_SERVER_SERVICE_TOKEN}'
+    # api_key:  '${FLEET_ENROLLMENT_TOKEN}'
+
     ssl:
       enabled: true
       certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]

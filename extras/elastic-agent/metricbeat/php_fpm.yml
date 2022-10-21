@@ -6,7 +6,12 @@
   #  - pool
   #  - process
   period: 10s
-  hosts: ["weblhs-php.nginx.local:9000"]
+  hosts: 
+    - "https://${APP_HOST}.${LOC_NET}:443"
   status_path: "/status"
   #username: "user"
   #password: "secret"
+  ssl:
+    enabled: true
+    certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
+
