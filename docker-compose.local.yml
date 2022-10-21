@@ -8,10 +8,6 @@ networks:
   intnet:
     external: false
     name: ${INT_NETWORK}
-  # for elastic
-  nginxnet:
-    external: true
-    name: "nginx.local"
 
 services:
   webwp:
@@ -48,7 +44,6 @@ services:
       - "traefik.http.routers.webwp-${NUM}-public.tls=true"
       - "traefik.http.services.webwp-${APP_ID}.loadbalancer.server.port=443"
       - "traefik.http.services.webwp-${APP_ID}.loadbalancer.server.scheme=https"
-      - "traefik.http.services.webwp-${APP_ID}.loadbalancer.healthcheck.hostname=${APP_HOST}"
       # fi
     # healthcheck:
     #  test: "curl -s -I http://localhost/nginx_status | grep -q 'HTTP/1.1 200 OK'"
@@ -70,8 +65,6 @@ services:
     networks:
       # local network:
       - intnet
-      # for elastic apm
-      - nginxnet
     environment:
       - ELASTIC_APM_ENVIRONMENT=${STAGE}
       - ELASTIC_APM_HOSTNAME=webwp-php.${INT_NETWORK}
@@ -185,16 +178,11 @@ services:
       - default
       # local network:
       - intnet
-      # for elastic
-      - nginxnet
     # ports:
     #  - ${APM_PORT}:8200
     #  - ${FLEET_PORT}:8220
     container_name: "${APP_ID}-fleet"
     hostname: "fleet.${INT_NETWORK}"
-    extra_hosts:
-      # - "apm.${INT_NETWORK}:192.168.122.20"
-      - "apm.${INT_NETWORK}:0.0.0.0"
     user: root # note, synthetic browser monitors require this set to `elastic-agent`
     environment:
       # my to configs yamls in extras/elastic-agent
@@ -266,7 +254,6 @@ services:
       - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8220"
       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=https"
-      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.healthcheck.hostname=fleet.${INT_NETWORK}"
     # healthcheck:
     #   test: ["CMD-SHELL", "elastic-agent status | grep 'Status: HEALTHY'"]
     #   interval: 30s
