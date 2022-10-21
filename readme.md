@@ -1,4 +1,4 @@
-#### Wordpress for platypus box with mysql, phpMyAdmin, Redis and connection to Elasticsearch 
+#### Wordpress for platypus box with mysql, phpMyAdmin, Redis and connection to Elasticsearch in https://github.com/lhsradek/platypus-lhsdock
 
 ### Setup
 
