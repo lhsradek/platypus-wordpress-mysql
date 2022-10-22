@@ -22,9 +22,15 @@ services:
     #  - 4443:443
     networks:
       # for traefik:
-      - default
+      default:
+        aliases:
+          - "${APP_HOST}"
+          - "${WP_PHP_MY_ADMIN_HOST}"
       # local network:
-      - intnet
+      intnet:
+        aliases:
+          - "${APP_HOST}"
+          - "${WP_PHP_MY_ADMIN_HOST}"
     volumes:
       # The first mount add bash and ping to nginx:alpine - lhsradek/lhsdock this dont'n need, see:
       # https://github.com/lhsradek/platypus-lhsdock/blob/main/context/Dockerfile of lhsradek/lhsdock:v3
@@ -44,6 +50,7 @@ services:
       - "traefik.http.routers.webwp-${NUM}-public.tls=true"
       - "traefik.http.services.webwp-${APP_ID}.loadbalancer.server.port=443"
       - "traefik.http.services.webwp-${APP_ID}.loadbalancer.server.scheme=https"
+      - "traefik.http.services.webwp-${APP_ID}.loadbalancer.healthcheck.hostname=${APP_HOST}"
       # fi
     # healthcheck:
     #  test: "curl -s -I http://localhost/nginx_status | grep -q 'HTTP/1.1 200 OK'"
@@ -161,8 +168,6 @@ services:
       # - ./extras/redis/redis.conf:/usr/local/etc/redis/redis.conf
       # - ./extras/var/lib/sysctl.d/00-alpine.conf:/var/lib/sysctl.d/00-alpine.conf:rw
       # - ./certs/ca.crt:/etc/ssl/private/ca.crt:ro
-      # - ./certs/${REDIS_CERTNAME}.crt:/etc/ssl/private/cacert.crt:ro
-      # - ./certs/${REDIS_CERTNAME}.key:/etc/ssl/private/cacert.key:ro
       - redis:/data:rw
 
 #
@@ -175,17 +180,23 @@ services:
     restart: ${DOCKER_RESTART_POLICY}
     networks:
       # for traefik:
-      - default
+      default:
+        aliases:
+          - "apm.${INT_NETWORK}"
+          - "fleet.${APP_NICK}.${INT_NETWORK}"
       # local network:
-      - intnet
+      intnet:
+        aliases:
+          - "apm.${INT_NETWORK}"
+          - "fleet.${APP_NICK}.${INT_NETWORK}"
     # ports:
     #  - ${APM_PORT}:8200
     #  - ${FLEET_PORT}:8220
     container_name: "${APP_ID}-fleet"
-    hostname: "fleet.${INT_NETWORK}"
+    hostname: "fleet.${APP_NICK}.${INT_NETWORK}"
     user: root # note, synthetic browser monitors require this set to `elastic-agent`
     environment:
-      # my to configs yamls in extras/elastic-agent
+      # my vars to configs yamls in extras/elastic-agent
       - APP_ID=${APP_ID}
       - APP_HOST=docker
       - APP_NET=nginx.local
@@ -219,7 +230,7 @@ services:
       - FLEET_CA=/usr/share/elastic-agent/certs/ca.crt
       - FLEET_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
       - FLEET_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
-      - FLEET_URL=https://fleet.${INT_NETWORK}:8220
+      - FLEET_URL=https://fleet.${APP_NICK}.${INT_NETWORK}:8220
       - KIBANA_FLEET_USERNAME=elastic
       - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
       - KIBANA_FLEET_HOST=https://kibana.docker.nginx.local:5601
@@ -235,7 +246,6 @@ services:
       # - ./extras/elastic-agent/elastic-agent.yml:/usr/share/elastic-agent/elastic-agent.yml
       - ./extras/elastic-agent/apm-server.yml:/usr/share/elastic-agent/data/elastic-agent-${STV}/install/apm-server-${STACK_VERSION}-linux-x86_64/apm-server.yml
       - ./extras/elastic-agent/filebeat.yml:/usr/share/elastic-agent/data/elastic-agent-${STV}/install/filebeat-${STACK_VERSION}-linux-x86_64/filebeat.yml
-      # - ./extras/elastic-agent/fleet-server.yml:/usr/share/elastic-agent/data/elastic-agent-${STV}/install/fleet-server-${STACK_VERSION}-linux-x86_64/fleet-servr.yml
       - ./extras/elastic-agent/metricbeat.yml:/usr/share/elastic-agent/data/elastic-agent-${STV}/install/metricbeat-${STACK_VERSION}-linux-x86_64/metricbeat.yml
       - ./extras/elastic-agent/heartbeat.yml:/usr/share/elastic-agent/data/elastic-agent-${STV}/install/heartbeat-${STACK_VERSION}-linux-x86_64/heartbeat.yml
       - ./logs/fleet/elastic-agent:/usr/share/elastic-agent/state/data/logs
@@ -249,11 +259,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=${DOCKER_NETWORK}"
-      - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${INT_NETWORK}`, `apm.${INT_NETWORK}`)"
+      - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_NICK}.${INT_NETWORK}`, `apm.${INT_NETWORK}`)"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
-      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8220"
-      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=https"
+      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8200"
+      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=http"
+      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.healthcheck.hostname=apm.${INT_NETWORK}"
     # healthcheck:
     #   test: ["CMD-SHELL", "elastic-agent status | grep 'Status: HEALTHY'"]
     #   interval: 30s

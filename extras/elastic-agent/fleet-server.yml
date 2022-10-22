@@ -1,5 +1,3 @@
-# Enables the stats endpoint under http://localhost:5601 by default.
-# Additional stats can be found under http://127.0.0.1:5066/stats and http://127.0.0.1:5066/state
 http.enabled: true
 http.host: 0.0.0.0
 http.port: 5066
@@ -12,25 +10,23 @@ logging:
 
 fleet:
   hosts:
-    - 'https://fleet.wordpress.local:8220'
+    - "https://fleet.wordpress.local:8220"
   agent:
-    id: fb41b289-10cf-40c7-94fb-ee854e748e1e
+    id: "fb41b289-10cf-40c7-94fb-ee854e748e1e"
 
-id: ${FLEET_SERVER_POLICY_ID}
+id: "${FLEET_SERVER_POLICY_ID}"
 outputs:
   elasticsearch:
     hosts: 
       - "https://es01.${APP_ID}.${APP_NET}:9200"
       - "https://es02.${APP_ID}.${APP_NET}:9201"
-      # - "https://es03.${APP_ID}.${APP_NET}:9202"
     protocol: "https"
-    username: "${ELASTICSEARCH_USERNAME}"
-    password: "${ELASTICSEARCH_PASSWORD}"
-    # service_token: '${FLEET_SERVER_SERVICE_TOKEN}'
-    # api_key:  '${FLEET_ENROLLMENT_TOKEN}'
+    # username: "${ELASTICSEARCH_USERNAME}"
+    # password: "${ELASTICSEARCH_PASSWORD}"
+    service_token: '${FLEET_SERVER_SERVICE_TOKEN}'
+    api_key:  '${FLEET_ENROLLMENT_TOKEN}'
 
     ssl:
       enabled: true
       certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
-      verification_mode: certificate
-      # verification_mode: none
+      verification_mode: "certificate"
