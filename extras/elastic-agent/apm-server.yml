@@ -27,15 +27,14 @@ apm-server:
         username: "${ELASTICSEARCH_USERNAME}"
         password: "${ELASTICSEARCH_PASSWORD}"
         ssl.certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
-        # ssl.certificate: "${APM_SERVER_CERT}"
-        # ssl.key: "${APM_SERVER_CERT_KEY}"
       # Index pattern in which to search for source maps, when fetching source maps from Elasticsearch.
       # index_pattern: "apm-*-sourcemap*"
 
 #============================= Instrumentation =============================
 instrumentation:
   enabled: true
-  environment: "development"
+  environment: "${STAGE}"
+
   hosts:
     - http://apm.nginx.local:8200
   profiling:
@@ -59,8 +58,6 @@ instrumentation:
     ssl.enabled: true
     ssl.certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
     ssl.verification_mode: "certificate"
-    # ssl.certificate: "${APM_SERVER_CERT}"
-    # ssl.key: "${APM_SERVER_CERT_KEY}"
 
 #================================ Outputs =================================
 
@@ -81,8 +78,6 @@ output.elasticsearch:
   ssl.enabled: true
   ssl.certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
   ssl.verification_mode: "certificate"
-  # ssl.certificate: "${APM_SERVER_CERT}"
-  # ssl.key: "${APM_SERVER_CERT_KEY}"
 
 #---------------------------- Logstash output -----------------------------
 # # no!!!APM send so metrics
@@ -93,19 +88,6 @@ output.elasticsearch:
 #   #username: "apm_system"
 #   username: "${ELASTICSEARCH_USERNAME}"
 #   password: "${ELASTICSEARCH_PASSWORD}"
-
-instrumentation:
-  enabled: true
-  environment: "developmen"
-  hosts:
-    - http://apm.nginx.local:8200
-  profiling:
-    cpu:
-      enabled: true
-      interval: 60s
-      duration: 10s
-    heap:
-      enabled: true
 
 #=============================== HTTP Endpoint ===============================
 
@@ -134,5 +116,3 @@ monitoring:
 #   ssl.enabled: true
 #   ssl.certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
 #   ssl.verification_mode: "certificate"
-#   ssl.certificate: "${APM_SERVER_CERT}"
-#   ssl.key: "${APM_SERVER_CERT_KEY}"

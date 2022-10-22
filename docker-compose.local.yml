@@ -32,6 +32,7 @@ services:
           - "${APP_HOST}"
           - "${WP_PHP_MY_ADMIN_HOST}"
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       # The first mount add bash and ping to nginx:alpine - lhsradek/lhsdock this dont'n need, see:
       # https://github.com/lhsradek/platypus-lhsdock/blob/main/context/Dockerfile of lhsradek/lhsdock:v3
       - ./extras/nginx/add.sh:/docker-entrypoint.d/05-add-packages.sh
@@ -52,11 +53,11 @@ services:
       - "traefik.http.services.webwp-${APP_ID}.loadbalancer.server.scheme=https"
       - "traefik.http.services.webwp-${APP_ID}.loadbalancer.healthcheck.hostname=${APP_HOST}"
       # fi
-    # healthcheck:
-    #  test: "curl -s -I http://localhost/nginx_status | grep -q 'HTTP/1.1 200 OK'"
-    #  interval: 10s
-    #  timeout: 20s
-    #  retries: 50
+    healthcheck:
+      test: "curl -s -I http://localhost/nginx_status | grep -q 'HTTP/1.1 200 OK'"
+      interval: 10s
+      timeout: 20s
+      retries: 50
 
   webwp-php:
     # Alpine WORDPRESS-php for install or update
@@ -74,7 +75,7 @@ services:
       - intnet
     environment:
       - ELASTIC_APM_ENVIRONMENT=${STAGE}
-      - ELASTIC_APM_HOSTNAME=webwp-php.${INT_NETWORK}
+      - ELASTIC_APM_HOSTNAME=apm.${INT_NETWORK}
       - ELASTIC_APM_LOG_LEVEL_STDERR=info
       - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
       # - ELASTIC_APM_API_KEY=${ELASTIC_APM_API_KEY}
@@ -93,6 +94,7 @@ services:
         define( 'WP_ENVIRONMENT_TYPE', "${ENVIRONMENT_TYPE}" );
         define( 'WP_REDIS_HOST', "redis" );
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./extras/php/phpSettings.conf:/usr/local/etc/php-fpm.d/zzz-phpSettings.conf
       - ./certs/ca.crt:/var/www/html/wp-includes/certificates/rootCA.crt:ro
       # - ./certs/${CERTNAME}.crt:/var/www/html/wp-includes/certificates/${APP_HOST}.crt:ro
@@ -142,6 +144,7 @@ services:
       MYSQL_PASSWORD: ${WP_DB_PASSWORD}
       MYSQL_INITDB_SKIP_TZINFO: "true"
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./logs/wordpress-mysql:/var/log/mysql:rw
       - ./extras/etc/mysql/mariadb.conf.d/50-server-ssl.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf:ro
       - ./certs/ca.crt:/etc/mysql/cacert.pem:ro
@@ -164,6 +167,7 @@ services:
     # ports:
     # - 6379:6379
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       # - ./extras/etc/sysctl.conf:/etc/sysctl.conf:ro
       # - ./extras/redis/redis.conf:/usr/local/etc/redis/redis.conf
       # - ./extras/var/lib/sysctl.d/00-alpine.conf:/var/lib/sysctl.d/00-alpine.conf:rw
@@ -203,6 +207,7 @@ services:
       - LOC_NET=${INT_NETWORK}
       - CLUSTER_NAME=${CLUSTER_NAME}
       - CLUSTER_UUID=${CLUSTER_UUID}
+      - STAGE=${STAGE}
       - STACK_VERSION=${STACK_VERSION}
       - STV=${STV}
       # without configs in extras/elastic-agent, volumes links are disabled by comment, install with empty volume fleet
@@ -210,9 +215,15 @@ services:
       - cluster.name=${CLUSTER_NAME}
       - cluster.uuid=${CLUSTER_UUID}
       - AMP_SERVER_ENABLE=1
-      - APM_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
-      - APM_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
       - ELASTIC_AGENT_TAGS=docker,dev
+      - ELASTIC_APM_SERVICE_NAME=${APP_NICK}-${APP_ID}
+      - ELASTIC_APM_SERVICE_NODE_NAME=${APP_HOST}
+      - ELASTIC_APM_ENVIRONMENT=${STAGE}
+      - ELASTIC_APM_HOSTNAME=apm.${INT_NETWORK}
+      - ELASTIC_APM_LOG_LEVEL_STDERR=info
+      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      # - ELASTIC_APM_API_KEY=${ELASTIC_APM_API_KEY}
+      - ELASTIC_APM_SERVER_URL=http://apm.${INT_NETWORK}:8200
       - ELASTICSEARCH_HOSTS=https://es01.docker.nginx.local:9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
@@ -265,11 +276,11 @@ services:
       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8200"
       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=http"
       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.healthcheck.hostname=apm.${INT_NETWORK}"
-    # healthcheck:
-    #   test: ["CMD-SHELL", "elastic-agent status | grep 'Status: HEALTHY'"]
-    #   interval: 30s
-    #   timeout: 60s
-    #   retries: 60
+    healthcheck:
+      test: ["CMD-SHELL", "elastic-agent status | grep 'Status: HEALTHY'"]
+      interval: 30s
+      timeout: 60s
+      retries: 60
      
 #       
 #   Redis Commander - Web Console for Redis
