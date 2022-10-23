@@ -36,13 +36,6 @@ inputs:
         data_stream.dataset: system.filesystem
 
 output:
-  # for provisioning:
-  # logstash:
-  #   # Boolean flag to enable or disable the output module.
-  #   enabled: true
-  #   # The Logstash hosts.
-  #   hosts: ["logstash.docker.nginx.local:5044"]
-   
   # for /metricbeat -e setup --dashboards:
   elasticsearch:
     hosts: 
