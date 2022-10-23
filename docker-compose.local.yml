@@ -106,10 +106,19 @@ services:
   webpma-php:
     # Alpine phpMyAdmin
     image: phpmyadmin:fpm-alpine
+    # image: lhsradek/fpm:v1
     container_name: "${APP_ID}-webpma-php"
     hostname: "pma.${APP_HOST}"
     restart: ${DOCKER_RESTART_POLICY}
     environment:
+      - ELASTIC_APM_ENVIRONMENT=${STAGE}
+      - ELASTIC_APM_LOG_LEVEL_STDERR=info
+      - ELASTIC_APM_HOSTNAME=webmpa-php.${INT_NETWORK}
+      - ELASTIC_APM_SERVER_URL=${ELASTIC_APM_SERVER_URL}
+      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      # - ELASTIC_APM_API_KEY=${ELASTIC_APM_API_KEY}
+      - ELASTIC_APM_SERVICE_NAME=${APP_NICK}-${APP_ID}
+      - ELASTIC_APM_SERVICE_NODE_NAME=${APP_HOST}
       - PMA_HOST=db.${APP_HOST}
       - PMA_ARBITRARY=0
       - UPLOAD_LIMIT=1280M

@@ -44,20 +44,20 @@ apm-server:
     ssl.verification_mode: "certificate"
 
 #============================= Instrumentation =============================
-instrumentation:
-  enabled: true
-  environment: "${STAGE}"
-
-  hosts:
-    - http://apm.nginx.local:8200
-  profiling:
-    cpu:
-      enabled: true
-      interval: 60s
-      duration: 10s
-    heap:
-      enabled: true
-      interval: 60s
+#instrumentation:
+#  enabled: true
+#  environment: "${STAGE}"
+#
+#  hosts:
+#    - http://apm.nginx.local:8200
+#  profiling:
+#    cpu:
+#      enabled: true
+#      interval: 60s
+#      duration: 10s
+#    heap:
+#      enabled: true
+#      interval: 60s
 
 #================================ Outputs =================================
 

@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-# $cfg['blowfish_secret'] = '65145d665b8e660d25ac20bf30912ab3'; /* YOU MUST FILL IN THIS FOR COOKIE AUTH! */
+$cfg['blowfish_secret'] = '65145d665b8e660d25ac20bf30912ab3'; /* YOU MUST FILL IN THIS FOR COOKIE AUTH! */
 
 /**
  * First server
