@@ -215,7 +215,7 @@ services:
       - cluster.name=${CLUSTER_NAME}
       - cluster.uuid=${CLUSTER_UUID}
       - AMP_SERVER_ENABLE=1
-      - ELASTIC_AGENT_TAGS=docker,dev
+      - ELASTIC_AGENT_TAGS=${ELASTIC_AGENT_TAGS}
       - ELASTIC_APM_SERVICE_NAME=${APP_NICK}-${APP_ID}
       - ELASTIC_APM_SERVICE_NODE_NAME=${APP_HOST}
       - ELASTIC_APM_ENVIRONMENT=${STAGE}
