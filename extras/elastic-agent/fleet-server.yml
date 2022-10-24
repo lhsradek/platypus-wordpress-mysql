@@ -19,7 +19,7 @@ outputs:
   elasticsearch:
     hosts: 
       - "https://es01.${APP_ID}.${APP_NET}:9200"
-      - "https://es02.${APP_ID}.${APP_NET}:9201"
+      # - "https://es02.${APP_ID}.${APP_NET}:9201"
     protocol: "https"
     # username: "${ELASTICSEARCH_USERNAME}"
     # password: "${ELASTICSEARCH_PASSWORD}"

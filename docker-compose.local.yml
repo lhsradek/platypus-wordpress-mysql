@@ -22,15 +22,9 @@ services:
     #  - 4443:443
     networks:
       # for traefik:
-      default:
-        aliases:
-          - "${APP_HOST}"
-          - "${WP_PHP_MY_ADMIN_HOST}"
+        - default
       # local network:
-      intnet:
-        aliases:
-          - "${APP_HOST}"
-          - "${WP_PHP_MY_ADMIN_HOST}"
+        - intnet
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       # The first mount add bash and ping to nginx:alpine - lhsradek/lhsdock this dont'n need, see:
@@ -52,7 +46,6 @@ services:
       - "traefik.http.services.webwp-${APP_ID}.loadbalancer.server.port=443"
       - "traefik.http.services.webwp-${APP_ID}.loadbalancer.server.scheme=https"
       - "traefik.http.services.webwp-${APP_ID}.loadbalancer.healthcheck.hostname=${APP_HOST}"
-      # fi
     healthcheck:
       test: "curl -s -I http://localhost/nginx_status | grep -q 'HTTP/1.1 200 OK'"
       interval: 10s
@@ -78,10 +71,10 @@ services:
       - ELASTIC_APM_LOG_LEVEL_STDERR=info
       - ELASTIC_APM_HOSTNAME=webwp-php.${INT_NETWORK}
       - ELASTIC_APM_SERVER_URL=${ELASTIC_APM_SERVER_URL}
-      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
-      # - ELASTIC_APM_API_KEY=${ELASTIC_APM_API_KEY}
+      # - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      - ELASTIC_APM_API_KEY=${ELASTIC_APM_API_KEY}
       - ELASTIC_APM_SERVICE_NAME=${APP_NICK}-${APP_ID}
-      - ELASTIC_APM_SERVICE_NODE_NAME=${APP_HOST}
+      - ELASTIC_APM_SERVICE_NODE_NAME=fleet.${APP_NICK}.${INT_NETWORK}
       - WORDPRESS_DB_HOST=db.${APP_HOST}
       - WORDPRESS_DB_NAME=${APP_ID}
       - WORDPRESS_DB_USER=${APP_ID}
@@ -106,19 +99,10 @@ services:
   webpma-php:
     # Alpine phpMyAdmin
     image: phpmyadmin:fpm-alpine
-    # image: lhsradek/fpm:v1
     container_name: "${APP_ID}-webpma-php"
     hostname: "pma.${APP_HOST}"
     restart: ${DOCKER_RESTART_POLICY}
     environment:
-      - ELASTIC_APM_ENVIRONMENT=${STAGE}
-      - ELASTIC_APM_LOG_LEVEL_STDERR=info
-      - ELASTIC_APM_HOSTNAME=webmpa-php.${INT_NETWORK}
-      - ELASTIC_APM_SERVER_URL=${ELASTIC_APM_SERVER_URL}
-      # - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
-      - ELASTIC_APM_API_KEY=${ELASTIC_APM_API_KEY}
-      - ELASTIC_APM_SERVICE_NAME=${APP_NICK}-${APP_ID}
-      - ELASTIC_APM_SERVICE_NODE_NAME=${APP_HOST}
       - PMA_HOST=db.${APP_HOST}
       - PMA_ARBITRARY=0
       - UPLOAD_LIMIT=1280M
@@ -193,15 +177,9 @@ services:
     restart: ${DOCKER_RESTART_POLICY}
     networks:
       # for traefik:
-      default:
-        aliases:
-          - "apm.${INT_NETWORK}"
-          - "fleet.${APP_NICK}.${INT_NETWORK}"
+      - default
       # local network:
-      intnet:
-        aliases:
-          - "apm.${INT_NETWORK}"
-          - "fleet.${APP_NICK}.${INT_NETWORK}"
+      - intnet
     # ports:
     #  - ${APM_PORT}:8200
     #  - ${FLEET_PORT}:8220
@@ -211,7 +189,7 @@ services:
     environment:
       - "monitoring.cluster_uuid=${CLUSTER_UUID}"
       - APP_ID=${APP_ID}
-      - APP_HOST=docker
+      - APP_HOST=${APP_NICK}
       - APP_NET=nginx.local
       - LOC_NET=${INT_NETWORK}
       - CLUSTER_NAME=${CLUSTER_NAME}
@@ -225,13 +203,15 @@ services:
       - ELASTIC_APM_SERVICE_NODE_NAME=${APP_HOST}
       - ELASTIC_APM_ENVIRONMENT=${STAGE}
       - ELASTIC_APM_LOG_LEVEL_STDERR=info
-      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
-      # - ELASTIC_APM_API_KEY=${ELASTIC_APM_API_KEY}
+      # - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      - ELASTIC_APM_API_KEY=${ELASTIC_APM_API_KEY}
       - ELASTIC_APM_SERVER_URL=http://apm.${INT_NETWORK}:8200
       - ELASTICSEARCH_HOSTS=https://es01.docker.nginx.local:9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=/usr/share/elastic-agent/certs/ca.crt
+      - ELASTICSEARCH_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
+      - ELASTICSEARCH_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
       - FLEET_ENROLL=1
       - FLEET_ENROLLMENT_TOKEN=${FLEET_ENROLLMENT_TOKEN}
       - FLEET_SERVER_ENABLE=1
@@ -243,8 +223,8 @@ services:
       - FLEET_SERVER_POLICY_ID=${FLEET_SERVER_POLICY_ID}
       - FLEET_SERVER_SERVICE_TOKEN=${FLEET_SERVER_SERVICE_TOKEN}
       - FLEET_CA=/usr/share/elastic-agent/certs/ca.crt
-      - FLEET_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
-      - FLEET_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
+      # - FLEET_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
+      # - FLEET_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
       - FLEET_URL=https://fleet.${APP_NICK}.${INT_NETWORK}:8220
       - KIBANA_FLEET_USERNAME=elastic
       - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
@@ -276,12 +256,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=${DOCKER_NETWORK}"
-      - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_NICK}.${INT_NETWORK}`, `apm.${INT_NETWORK}`)"
+      - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_NICK}.${INT_NETWORK}`)"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
-      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8200"
-      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=http"
-      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.healthcheck.hostname=apm.${INT_NETWORK}"
+      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8220"
+      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=https"
+      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.healthcheck.hostname=fleet.${APP_NICK}.${INT_NETWORK}"
     healthcheck:
       test: ["CMD-SHELL", "elastic-agent status | grep 'Status: HEALTHY'"]
       interval: 30s
