@@ -47,7 +47,6 @@ apm-server:
 #instrumentation:
 #  enabled: true
 #  environment: "${STAGE}"
-#
 #  hosts:
 #    - http://apm.nginx.local:8200
 #  profiling:
