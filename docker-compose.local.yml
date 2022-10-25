@@ -186,6 +186,7 @@ services:
     container_name: "${APP_ID}-fleet"
     hostname: "fleet.${APP_NICK}.${INT_NETWORK}"
     user: root # note, synthetic browser monitors require this set to `elastic-agent`
+    # https://www.elastic.co/guide/en/fleet/current/agent-environment-variables.html
     environment:
       - "monitoring.cluster_uuid=${CLUSTER_UUID}"
       - APP_ID=${APP_ID}
@@ -205,14 +206,15 @@ services:
       - ELASTIC_APM_LOG_LEVEL_STDERR=info
       # - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
       - ELASTIC_APM_API_KEY=${ELASTIC_APM_API_KEY}
-      - ELASTIC_APM_SERVER_URL=http://apm.${INT_NETWORK}:8200
+      - ELASTIC_APM_SERVER_URL=http://apm-server.${APP_HOST}:8200
       - ELASTICSEARCH_HOSTS=https://es01.docker.nginx.local:9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=/usr/share/elastic-agent/certs/ca.crt
+      - ELASTICSEARCH_CA=/usr/share/elastic-agent/certs/${ES01_CERTNAME}.crt
       - ELASTICSEARCH_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
       - ELASTICSEARCH_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
-      - FLEET_ENROLL=1
+      - FLEET_ENROLL=true
       - FLEET_ENROLLMENT_TOKEN=${FLEET_ENROLLMENT_TOKEN}
       - FLEET_SERVER_ENABLE=1
       - FLEET_SERVER_ELASTICSEARCH_HOST=https://es01.docker.nginx.local:9200
@@ -223,8 +225,8 @@ services:
       - FLEET_SERVER_POLICY_ID=${FLEET_SERVER_POLICY_ID}
       - FLEET_SERVER_SERVICE_TOKEN=${FLEET_SERVER_SERVICE_TOKEN}
       - FLEET_CA=/usr/share/elastic-agent/certs/ca.crt
-      # - FLEET_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
-      # - FLEET_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
+      - FLEET_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
+      - FLEET_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
       - FLEET_URL=https://fleet.${APP_NICK}.${INT_NETWORK}:8220
       - KIBANA_FLEET_USERNAME=elastic
       - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
