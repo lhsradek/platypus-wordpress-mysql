@@ -38,6 +38,10 @@ then
     exit 1;
 fi
 
+mkdir -p logs logs/wordpress-nginx
+touch logs/wordpress-nginx/php-access.log
+touch logs/wordpress-nginx/php-error.log
+
 ARGS="-f $rootPath/docker-compose.$RUNENV.yml"
 # ARGS="-f $rootPath/docker-compose.$RUNENV.yml --verbose"
 # ARGS="-f $rootPath/docker-compose.$RUNENV.yml --verbose --log-level=DEBUG"
