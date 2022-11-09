@@ -168,6 +168,9 @@ services:
 # === Elastic Agent as fleet server ===
 #
   webwp-fleet:
+    depends_on:
+      webwp:
+        condition: service_healthy
     # Ubuntu - fleet
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
     # image: docker.elastic.co/beats/elastic-agent-complete:${STACK_VERSION} # ;-)
