@@ -186,7 +186,7 @@ services:
     # https://www.elastic.co/guide/en/fleet/current/agent-environment-variables.html
     environment:
       - APP_ID=${APP_ID}
-      - APP_HOST=${APP_NICK}
+      - APP_HOST=${HOST_NICK}
       - APP_NET=${APP_NET}
       - LOC_NET=${INT_NETWORK}
       - CLUSTER_NAME=${CLUSTER_NAME}
@@ -198,9 +198,8 @@ services:
       - ELASTIC_APM_ENVIRONMENT=${STAGE}
       - ELASTIC_APM_LOG_LEVEL_STDERR=info
       - ELASTIC_APM_API_KEY=${ELASTIC_APM_API_KEY}
-      #- ELASTIC_APM_SERVER_URL=http://fleet.${APP_HOST}:8200
-      - ELASTIC_APM_SERVER_URL=http://fleet.${APP_NICK}.${APP_NET}:8200
-      - ELASTICSEARCH_HOSTS=https://es01.${APP_NICK}.${APP_NET}:9200
+      - ELASTIC_APM_SERVER_URL=http://fleet.${HOST_NICK}.${APP_NET}:8200
+      - ELASTICSEARCH_HOSTS=https://es01.${HOST_NICK}.${APP_NET}:9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=/usr/share/elastic-agent/certs/ca.crt
@@ -208,7 +207,7 @@ services:
       - FLEET_ENROLL=1
       - FLEET_ENROLLMENT_TOKEN=${FLEET_ENROLLMENT_TOKEN}
       - FLEET_SERVER_ENABLE=1
-      - FLEET_SERVER_ELASTICSEARCH_HOST=https://es01.${APP_NICK}.${APP_NET}:9200
+      - FLEET_SERVER_ELASTICSEARCH_HOST=https://es01.${HOST_NICK}.${APP_NET}:9200
       - FLEET_SERVER_ELASTICSEARCH_USERNAME=elastic
       - FLEET_SERVER_ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - FLEET_SERVER_ELASTICSEARCH_CA=/usr/share/elastic-agent/certs/ca.crt
@@ -217,13 +216,13 @@ services:
       - FLEET_SERVER_POLICY_ID=${FLEET_SERVER_POLICY_ID}
       - FLEET_SERVER_SERVICE_TOKEN=${FLEET_SERVER_SERVICE_TOKEN}
       - FLEET_CA=/usr/share/elastic-agent/certs/ca.crt
-      - FLEET_URL=https://fleet.${APP_HOST}:8220
+      - FLEET_URL=https://fleet.${APP_NICK}.${INT_NETWORK}:8220
       - FLEET_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
       - FLEET_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
       - KIBANA_CA=/usr/share/elastic-agent/certs/ca.crt
       - KIBANA_FLEET_USERNAME=elastic
       - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
-      - KIBANA_FLEET_HOST=https://kibana.${APP_NICK}.${APP_NET}:5601
+      - KIBANA_FLEET_HOST=https://kibana.${HOST_NICK}.${APP_NET}:5601
       - KIBANA_FLEET_CA=/usr/share/elastic-agent/certs/ca.crt
       - KIBANA_FLEET_SETUP=1
       - KIBANA_FLEET_REQUESTTIMEOUT=1200000
