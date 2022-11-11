@@ -167,7 +167,7 @@ services:
 #
 # === Elastic Agent as fleet server ===
 #
-  webwp-fleet:
+  fleet:
     depends_on:
       webwp:
         condition: service_healthy
