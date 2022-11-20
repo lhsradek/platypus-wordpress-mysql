@@ -254,8 +254,16 @@ services:
       - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_NICK}.${INT_NETWORK}`)"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
+      - "traefik.http.routers.webwp-fleet-${NUM}-public.service=webwp-fleet-${APP_ID}"
       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8220"
       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=https"
+      #
+      - "traefik.http.routers.webwp-apm-${NUM}-public.rule=Host(`amp.fleet.${APP_NICK}.${INT_NETWORK}`)"
+      - "traefik.http.routers.webwp-apm-${NUM}-public.entrypoints=https"
+      - "traefik.http.routers.webwp-apm-${NUM}-public.tls=true"
+      - "traefik.http.routers.webwp-apm-${NUM}-public.service=webwp-apm-${APP_ID}"
+      - "traefik.http.services.webwp-apm-${APP_ID}.loadbalancer.server.port=8200"
+      - "traefik.http.services.webwp-apm-${APP_ID}.loadbalancer.server.scheme=http"
     healthcheck:
       test: ["CMD-SHELL", "elastic-agent status | grep 'Status: HEALTHY'"]
       interval: 10s
