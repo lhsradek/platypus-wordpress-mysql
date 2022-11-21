@@ -1,12 +1,12 @@
 ###################### Filebeat Configuration #######################
 
 # http.enabled: true
-# http.port: 5066
+# http.port: 5067
 # http.host: "0.0.0.0"
 # http.host: "file.nginx.local"
 
 monitoring:
-  enabled: true
+  enabled: false
   cluster_uuid: "${CLUSTER_UUID}"
 
 filebeat.config:

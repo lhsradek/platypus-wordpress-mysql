@@ -1,6 +1,6 @@
-http.enabled: true
-http.host: 0.0.0.0
-http.port: 5066
+# http.enabled: true
+# http.host: 0.0.0.0
+# http.port: 5066
 #http.named_pipe.user:
 #http.named_pipe.security_descriptor:
 
