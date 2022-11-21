@@ -185,12 +185,16 @@ services:
       default:
         aliases:
           - apm-server
+          - filebeat
+          - metricbet
           - apm-server.${APP_NICK}.${INT_NETWORK}
           - fleet.${APP_NICK}.${INT_NETWORK}
       # local network:
       intnet:
         aliases:
           - apm-server
+          - filebeat
+          - metricbet
           - apm-server.${APP_NICK}.${INT_NETWORK}
           - fleet.${APP_NICK}.${INT_NETWORK}
     user: root # note, synthetic browser monitors require this set to `elastic-agent`
