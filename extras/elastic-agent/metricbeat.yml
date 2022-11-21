@@ -6,7 +6,7 @@
 # http.host: "metric.nginx.local"
 
 monitoring:
-  enabled: true
+  enabled: false
   cluster_uuid: "${CLUSTER_UUID}"
 
 metricbeat.config.modules:
