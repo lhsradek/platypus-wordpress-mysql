@@ -258,7 +258,7 @@ services:
       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8220"
       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=https"
       #
-      - "traefik.http.routers.webwp-apm-${NUM}-public.rule=Host(`amp.fleet.${APP_NICK}.${INT_NETWORK}`)"
+      - "traefik.http.routers.webwp-apm-${NUM}-public.rule=Host(`amp.${APP_NICK}.${INT_NETWORK}`)"
       - "traefik.http.routers.webwp-apm-${NUM}-public.entrypoints=https"
       - "traefik.http.routers.webwp-apm-${NUM}-public.tls=true"
       - "traefik.http.routers.webwp-apm-${NUM}-public.service=webwp-apm-${APP_ID}"
