@@ -6,7 +6,7 @@
 # http.host: "file.nginx.local"
 
 monitoring:
-  enabled: false
+  enabled: true
   cluster_uuid: "${CLUSTER_UUID}"
 
 filebeat.config:
