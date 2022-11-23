@@ -183,20 +183,10 @@ services:
     networks:
       # for traefik:
       default:
-        aliases:
-          # - apm-server
-          - filebeat
-          - metricbet
-          # - apm-server.${APP_NICK}.${INT_NETWORK}
-          - fleet.${APP_NICK}.${INT_NETWORK}
       # local network:
       intnet:
         aliases:
-          # - apm-server
-          - filebeat
-          - metricbet
-          # - apm-server.${APP_NICK}.${INT_NETWORK}
-          - fleet.${APP_NICK}.${INT_NETWORK}
+          - apm-server
     user: root # note, synthetic browser monitors require this set to `elastic-agent`
     # https://www.elastic.co/guide/en/fleet/current/agent-environment-variables.html
     environment:
@@ -206,7 +196,6 @@ services:
       - LOC_NET=${INT_NETWORK}
       - CLUSTER_NAME=${CLUSTER_NAME}
       - CLUSTER_UUID=${CLUSTER_UUID}
-      - AMP_SERVER_ENABLE=0
       - ELASTIC_AGENT_TAGS=${ELASTIC_AGENT_TAGS}
       - ELASTIC_APM_SERVICE_NAME=${APP_NICK}-${APP_ID}
       - ELASTIC_APM_SERVICE_NODE_NAME=${APP_HOST}
@@ -263,7 +252,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=${DOCKER_NETWORK}"
-      # disable 'cause AMP_SERVER_ENABLE=0, use external apm-server defined in ELASTIC_APM_SERVER_URL
+      # disable 'cause use external apm-server defined in ELASTIC_APM_SERVER_URL
       # - "traefik.http.routers.webwp-apm-server-${NUM}-public.rule=Host(`amp-server.${APP_NICK}.${INT_NETWORK}`)"
       # - "traefik.http.routers.webwp-apm-server-${NUM}-public.entrypoints=https"
       # - "traefik.http.routers.webwp-apm-server-${NUM}-public.tls=true"
