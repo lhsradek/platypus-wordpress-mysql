@@ -16,7 +16,7 @@ services:
     # image: lhsradek/lhsdock:v3
     image: nginx:alpine
     container_name: "${APP_ID}-webwp"
-    hostname: "webwp.${INT_NETWORK}"
+    hostname: "webwp.${APP_HOST}"
     restart: ${DOCKER_RESTART_POLICY}
     # ports:
     #  - 80:80
@@ -60,7 +60,7 @@ services:
     image: lhsradek/fpm:v1
     container_name: "${APP_ID}-webwp-php"
     # hostname: "webwp-php"
-    hostname: "webwp-php.${APP_NICK}.${INT_NETWORK}"
+    hostname: "webwp-php.${APP_HOST}"
     restart: ${DOCKER_RESTART_POLICY}
     networks:
       # local network:
@@ -143,8 +143,7 @@ services:
     # Alpine Linux
     image: redis:7-alpine
     container_name: "${APP_ID}-redis"
-    # hostname: "redis.${INT_NETWORK}"
-    hostname: "redis"
+    hostname: "redis.${APP_HOST}"
     restart: ${DOCKER_RESTART_POLICY}
     networks:
       # local network:
@@ -175,12 +174,12 @@ services:
     #  - ${APM_PORT}:8200
     #  - ${FLEET_PORT}:8220
     container_name: "${APP_ID}-fleet"
-    hostname: "fleet.${APP_NICK}.${INT_NETWORK}"
+    hostname: "fleet.${APP_HOST}"
     networks:
       # for traefik:
       default:
         aliases:
-          - fleet.${APP_NICK}.${INT_NETWORK}
+          - fleet.${APP_HOST}
       # local network:
       # intnet:
       #   aliases:
@@ -212,7 +211,7 @@ services:
       - FLEET_SERVER_POLICY_ID=${FLEET_SERVER_POLICY_ID}
       - FLEET_SERVER_SERVICE_TOKEN=${FLEET_SERVER_SERVICE_TOKEN}
       - FLEET_CA=/usr/share/elastic-agent/certs/ca.crt
-      - FLEET_URL=https://fleet.${APP_NICK}.${INT_NETWORK}:8220
+      - FLEET_URL=https://fleet.${APP_APP}:8220
       - FLEET_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
       - FLEET_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
       - KIBANA_CA=/usr/share/elastic-agent/certs/ca.crt
@@ -248,14 +247,14 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=${DOCKER_NETWORK}"
-#       - "traefik.http.routers.webwp-apm-server-${NUM}-public.rule=Host(`amp-server.${APP_NICK}.${INT_NETWORK}`)"
+#       - "traefik.http.routers.webwp-apm-server-${NUM}-public.rule=Host(`amp-server.${APP_HOST}`)"
 #       - "traefik.http.routers.webwp-apm-server-${NUM}-public.entrypoints=https"
 #       - "traefik.http.routers.webwp-apm-server-${NUM}-public.tls=true"
 #       - "traefik.http.routers.webwp-apm-server-${NUM}-public.service=webwp-apm-server-${APP_ID}"
 #       - "traefik.http.services.webwp-apm-server-${APP_ID}.loadbalancer.server.port=8200"
 #       - "traefik.http.services.webwp-apm-server-${APP_ID}.loadbalancer.server.scheme=http"
-#       #
-      - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_NICK}.${INT_NETWORK}`)"
+#
+      - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_HOST}`)"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.service=webwp-fleet-${APP_ID}"
