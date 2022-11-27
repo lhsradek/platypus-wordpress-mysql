@@ -172,18 +172,18 @@ services:
     restart: ${DOCKER_RESTART_POLICY}
     ports:
     #  - ${APM_PORT}:8200
-      - 8222:8222
+      - ${FLEET_SERVER_PORT}:${FLEET_SERVER_PORT}
     container_name: "${APP_ID}-fleet"
     hostname: "fleet.${APP_HOST}"
     networks:
       # for traefik:
-      default:
-        aliases:
-          - fleet.${APP_HOST}
-      # local network:
-      # intnet:
+      # default:
       #   aliases:
-      #     - apm-server
+      #     - fleet.${APP_HOST}
+      # local network:
+      intnet:
+        aliases:
+          - apm-server
     user: root # note, synthetic browser monitors require this set to `elastic-agent`
     # https://www.elastic.co/guide/en/fleet/current/agent-environment-variables.html
     environment:
@@ -208,10 +208,11 @@ services:
       - FLEET_SERVER_ELASTICSEARCH_CA=/usr/share/elastic-agent/certs/ca.crt
       - FLEET_SERVER_ELASTICSEARCH_REQUESTTIMEOUT=180000
       - FLEET_SERVER_HOST=fleet.${APP_HOST}
+      - FLEET_SERVER_PORT=${FLEET_SERVER_PORT}
       - FLEET_SERVER_POLICY_ID=${FLEET_SERVER_POLICY_ID}
       - FLEET_SERVER_SERVICE_TOKEN=${FLEET_SERVER_SERVICE_TOKEN}
       - FLEET_CA=/usr/share/elastic-agent/certs/ca.crt
-      - FLEET_URL=https://fleet.${APP_HOST}:8222
+      - FLEET_URL=https://fleet.${APP_HOST}:${FLEET_SERVER_PORT}
       - FLEET_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
       - FLEET_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
       - KIBANA_CA=/usr/share/elastic-agent/certs/ca.crt
@@ -258,7 +259,7 @@ services:
 #       - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https"
 #       - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
 #       - "traefik.http.routers.webwp-fleet-${NUM}-public.service=webwp-fleet-${APP_ID}"
-#       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8222"
+#       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=${FLEET_SERVER_PORT}"
 #       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=https"
     healthcheck:
       test: ["CMD-SHELL", "elastic-agent status | grep 'Status: HEALTHY'"]
