@@ -170,9 +170,9 @@ services:
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
     # image: docker.elastic.co/beats/elastic-agent-complete:${STACK_VERSION} # ;-)
     restart: ${DOCKER_RESTART_POLICY}
-    # ports:
+    ports:
     #  - ${APM_PORT}:8200
-    #  - ${FLEET_PORT}:8220
+      - 8222:8222
     container_name: "${APP_ID}-fleet"
     hostname: "fleet.${APP_HOST}"
     networks:
@@ -211,7 +211,7 @@ services:
       - FLEET_SERVER_POLICY_ID=${FLEET_SERVER_POLICY_ID}
       - FLEET_SERVER_SERVICE_TOKEN=${FLEET_SERVER_SERVICE_TOKEN}
       - FLEET_CA=/usr/share/elastic-agent/certs/ca.crt
-      - FLEET_URL=https://fleet.${APP_HOST}:8220
+      - FLEET_URL=https://fleet.${APP_HOST}:8222
       - FLEET_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
       - FLEET_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
       - KIBANA_CA=/usr/share/elastic-agent/certs/ca.crt
@@ -244,9 +244,9 @@ services:
       - ./logs/wordpress-mysql/:/usr/share/elastic-agent/data/elastic-agent-${STV}/install/filebeat-${STACK_VERSION}-linux-x86_64/elogs/mysql/platypus-wordpress-mysql
       - /var/log:/usr/share/filebeat/elogs/system
       - fleet:/usr/share/elastic-agent
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=${DOCKER_NETWORK}"
+#     labels:
+#       - "traefik.enable=true"
+#       - "traefik.docker.network=${DOCKER_NETWORK}"
 #       - "traefik.http.routers.webwp-apm-server-${NUM}-public.rule=Host(`amp-server.${APP_HOST}`)"
 #       - "traefik.http.routers.webwp-apm-server-${NUM}-public.entrypoints=https"
 #       - "traefik.http.routers.webwp-apm-server-${NUM}-public.tls=true"
@@ -254,12 +254,12 @@ services:
 #       - "traefik.http.services.webwp-apm-server-${APP_ID}.loadbalancer.server.port=8200"
 #       - "traefik.http.services.webwp-apm-server-${APP_ID}.loadbalancer.server.scheme=http"
 #
-      - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_HOST}`)"
-      - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https"
-      - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
-      - "traefik.http.routers.webwp-fleet-${NUM}-public.service=webwp-fleet-${APP_ID}"
-      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8220"
-      - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=https"
+#       - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_HOST}`)"
+#       - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https"
+#       - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
+#       - "traefik.http.routers.webwp-fleet-${NUM}-public.service=webwp-fleet-${APP_ID}"
+#       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=8222"
+#       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.scheme=https"
     healthcheck:
       test: ["CMD-SHELL", "elastic-agent status | grep 'Status: HEALTHY'"]
       interval: 10s
