@@ -17,10 +17,7 @@ apm-server:
     enabled: true
     output:
       elasticsearch:
-        hosts:
-          - "https://es01.${APP_HOST}.${APP_NET}:9200"
-          # - "https://es02.${APP_HOST}.${APP_NET}:9201"
-          # - "https://es03.${APP_HOST}.${APP_NET}:9202"
+        hosts: ["https://es01.${APP_HOST}.${APP_NET}:9200"]
         protocol: "https"
         #api_key: "id:api_key"
         #api_key: "${AGENT_API_KEY}"
@@ -66,10 +63,7 @@ apm-server:
 #-------------------------- Elasticsearch output --------------------------
 output.elasticsearch:
   enabled: true
-  hosts: 
-    - "https://es01.${APP_HOST}.${APP_NET}:9200"
-    # - "https://es02.${APP_HOST}.${APP_NET}:9201"
-    # - "https://es03.${APP_HOST}.${APP_NET}:9202"
+  hosts: ["https://es01.${APP_HOST}.${APP_NET}:9200"]
   protocol: "https"
   # api_key: "id:api_key"
   # api_key: "${AGENT_API_KEY}"
@@ -78,6 +72,23 @@ output.elasticsearch:
   ssl.enabled: true
   ssl.certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
   ssl.verification_mode: "certificate"
+
+#============================= Instrumentation =============================
+
+# instrumentation:
+#   enabled: true
+#   environment: "${STAGE}"
+#   hosts:
+#     - http://apm-server.docker.nginx.local:8200
+#   profiling:
+#     cpu:
+#       enabled: true
+#       interval: 60s
+#       duration: 10s
+#     heap:
+#       enabled: true
+#       interval: 60s
+
 
 #---------------------------- Logstash output -----------------------------
 # # no!!!APM send so metrics
