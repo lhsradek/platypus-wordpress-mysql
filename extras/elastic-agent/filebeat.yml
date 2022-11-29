@@ -3,7 +3,6 @@
 # http.enabled: true
 # http.port: 5067
 # http.host: "0.0.0.0"
-# http.host: "file.nginx.local"
 
 monitoring:
   enabled: false
@@ -19,28 +18,23 @@ monitoring:
 #        certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
 #        verification_mode: "${VERIFICATION_MODE}"
 
-filebeat.config:
-  modules:
-    path: ${path.config}/modules.d/*.yml
-    reload.enabled: false
-
 processors:
-  - add_host_metadata: ~
-  - add_kubernetes_metadata: ~
+  # - add_host_metadata: ~
+  # - add_kubernetes_metadata: ~
   - add_docker_metadata: ~
-  - add_cloud_metadata: ~
+  # - add_cloud_metadata: ~
 
 output:
   # for provisioning:
   logstash:
     enabled: true
     hosts: ["logstash.${APP_HOST}.${APP_NET}:5044"]
-    timeout: 500s
+    timeout: 300s
     ssl:
-      # certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
+      certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
       certificate: "${LOGSTASH_SERVER_CERT}"
       key: "${LOGSTASH_SERVER_CERT_KEY}"
-      verification_mode: "none"
+      verification_mode: "${VERIFICATION_MODE}"
    
   # for /filebeat -e setup --dashboards:
   # elasticsearch:
@@ -75,7 +69,7 @@ setup:
       enabled: true
       certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
       # ca_trusted_fingerprint: D633B648E805E0C5099928D9FEFD3E8F513C5CCF
-      verification_mode: "none"
+      verification_mode: "${VERIFICATION_MODE}"
   
   kibana:
     host: "https://kibana.${APP_HOST}.${APP_NET}:5601"
@@ -86,4 +80,4 @@ setup:
     ssl:
       enabled: true
       certificate_authorities: ['${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}']
-      verification_mode: "certificate"
+      verification_mode: "${VERIFICATION_MODE}"

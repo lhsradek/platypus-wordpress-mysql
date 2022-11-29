@@ -168,22 +168,17 @@ services:
         condition: service_healthy
     # Ubuntu - fleet
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
-    # image: docker.elastic.co/beats/elastic-agent-complete:${STACK_VERSION} # ;-)
     restart: ${DOCKER_RESTART_POLICY}
-    ports:
-    #  - ${APM_PORT}:8200
-      - ${FLEET_SERVER_PORT}:${FLEET_SERVER_PORT}
+    # ports:
+    #   - ${APM_PORT}:${APM_PORT}
+    #   - ${FLEET_SERVER_PORT}:${FLEET_SERVER_PORT}
     container_name: "${APP_ID}-fleet"
     hostname: "fleet.${APP_HOST}"
     networks:
       # for traefik:
-      # default:
-      #   aliases:
-      #     - fleet.${APP_HOST}
+      # -default
       # local network:
-      intnet:
-        aliases:
-          - apm-server
+      - intnet
     user: root # note, synthetic browser monitors require this set to `elastic-agent`
     # https://www.elastic.co/guide/en/fleet/current/agent-environment-variables.html
     environment:
@@ -227,10 +222,11 @@ services:
       - STAGE=${STAGE}
       - STACK_VERSION=${STACK_VERSION}
       - STV=${STV}
+      - VERIFICATION_MODE=${VERIFICATION_MODE}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      # - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
-      # - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
       - /:/hostfs:ro
       - ./certs:/usr/share/elastic-agent/certs
       - ./extras/elastic-agent/elastic-agent.yml:/usr/share/elastic-agent/elastic-agent.yml
@@ -252,9 +248,9 @@ services:
 #       - "traefik.http.routers.webwp-apm-server-${NUM}-public.entrypoints=https"
 #       - "traefik.http.routers.webwp-apm-server-${NUM}-public.tls=true"
 #       - "traefik.http.routers.webwp-apm-server-${NUM}-public.service=webwp-apm-server-${APP_ID}"
-#       - "traefik.http.services.webwp-apm-server-${APP_ID}.loadbalancer.server.port=8200"
+#       - "traefik.http.services.webwp-apm-server-${APP_ID}.loadbalancer.server.port=${APM_PORT}"
 #       - "traefik.http.services.webwp-apm-server-${APP_ID}.loadbalancer.server.scheme=http"
-#
+#       #
 #       - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_HOST}`)"
 #       - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https"
 #       - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
@@ -266,8 +262,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 500
-     
-#       
+      
 #   Redis Commander - Web Console for Redis
 #        
 #   webwp-rc:
