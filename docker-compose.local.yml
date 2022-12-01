@@ -169,9 +169,9 @@ services:
     # Ubuntu - fleet
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
     restart: ${DOCKER_RESTART_POLICY}
-    # ports:
-    #   - ${APM_PORT}:${APM_PORT}
-    #   - ${FLEET_SERVER_PORT}:${FLEET_SERVER_PORT}
+    ports:
+      # - ${APM_PORT}:${APM_PORT}
+      - ${FLEET_SERVER_PORT}:${FLEET_SERVER_PORT}
     container_name: "${APP_ID}-fleet"
     hostname: "fleet.${APP_HOST}"
     networks:
@@ -193,7 +193,6 @@ services:
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=/usr/share/elastic-agent/certs/ca.crt
-      - ELASTICSEARCH_CA=/usr/share/elastic-agent/certs/ca.crt
       - FLEET_ENROLL=1
       - FLEET_ENROLLMENT_TOKEN=${FLEET_ENROLLMENT_TOKEN}
       - FLEET_SERVER_ENABLE=1
@@ -210,9 +209,6 @@ services:
       - FLEET_URL=https://fleet.${APP_HOST}:${FLEET_SERVER_PORT}
       - FLEET_SERVER_CERT=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.crt
       - FLEET_SERVER_CERT_KEY=/usr/share/elastic-agent/certs/${FLEET_CERTNAME}.key
-      - KIBANA_CA=/usr/share/elastic-agent/certs/ca.crt
-      - KIBANA_FLEET_USERNAME=elastic
-      - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
       - KIBANA_FLEET_HOST=https://kibana.${HOST_NICK}.${APP_NET}:5601
       - KIBANA_FLEET_CA=/usr/share/elastic-agent/certs/ca.crt
       - KIBANA_FLEET_SETUP=1
@@ -242,15 +238,6 @@ services:
       - /var/log:/usr/share/filebeat/elogs/system
       - fleet:/usr/share/elastic-agent
 #     labels:
-#       - "traefik.enable=true"
-#       - "traefik.docker.network=${DOCKER_NETWORK}"
-#       - "traefik.http.routers.webwp-apm-server-${NUM}-public.rule=Host(`amp-server.${APP_HOST}`)"
-#       - "traefik.http.routers.webwp-apm-server-${NUM}-public.entrypoints=https"
-#       - "traefik.http.routers.webwp-apm-server-${NUM}-public.tls=true"
-#       - "traefik.http.routers.webwp-apm-server-${NUM}-public.service=webwp-apm-server-${APP_ID}"
-#       - "traefik.http.services.webwp-apm-server-${APP_ID}.loadbalancer.server.port=${APM_PORT}"
-#       - "traefik.http.services.webwp-apm-server-${APP_ID}.loadbalancer.server.scheme=http"
-#       #
 #       - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_HOST}`)"
 #       - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https"
 #       - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
