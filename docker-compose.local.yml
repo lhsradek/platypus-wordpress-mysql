@@ -169,17 +169,17 @@ services:
     # Ubuntu - fleet
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
     restart: ${DOCKER_RESTART_POLICY}
-    ports:
-      # - ${APM_PORT}:${APM_PORT}
-      - ${FLEET_SERVER_PORT}:${FLEET_SERVER_PORT}
     container_name: "${APP_ID}-fleet"
     hostname: "fleet.${APP_HOST}"
+    user: root # note, synthetic browser monitors require this set to `elastic-agent`
     networks:
       # for traefik:
       # -default
       # local network:
       - intnet
-    user: root # note, synthetic browser monitors require this set to `elastic-agent`
+    ports:
+      # - ${APM_PORT}:${APM_PORT}
+      - ${FLEET_SERVER_PORT}:${FLEET_SERVER_PORT}
     # https://www.elastic.co/guide/en/fleet/current/agent-environment-variables.html
     environment:
       - APP_ID=${APP_ID}
