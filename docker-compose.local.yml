@@ -179,9 +179,9 @@ services:
       - default
       # local network:
       - intnet
-    ports:
-      # - ${APM_PORT}:${APM_PORT}
-      - ${FLEET_SERVER_PORT}:${FLEET_SERVER_PORT}
+    # ports:
+    #   - ${APM_PORT}:${APM_PORT}
+    #   - ${FLEET_SERVER_PORT}:${FLEET_SERVER_PORT}
     # https://www.elastic.co/guide/en/fleet/current/agent-environment-variables.html
     environment:
       - APP_ID=${APP_ID}
@@ -240,8 +240,10 @@ services:
       - /var/log:/usr/share/filebeat/elogs/system
       - fleet:/usr/share/elastic-agent
     labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${DOCKER_NETWORK}"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.rule=Host(`fleet.${APP_HOST}`)"
-      - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https"
+      - "traefik.http.routers.webwp-fleet-${NUM}-public.entrypoints=https-${FLEET_SERVER_PORT}"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.tls=true"
       - "traefik.http.routers.webwp-fleet-${NUM}-public.service=webwp-fleet-${APP_ID}"
       - "traefik.http.services.webwp-fleet-${APP_ID}.loadbalancer.server.port=${FLEET_SERVER_PORT}"
