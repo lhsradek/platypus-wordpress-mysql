@@ -35,6 +35,7 @@ output:
       certificate: "${LOGSTASH_SERVER_CERT}"
       key: "${LOGSTASH_SERVER_CERT_KEY}"
       verification_mode: "${VERIFICATION_MODE}"
+    index: "logs"
    
   # for /filebeat -e setup --dashboards:
   # elasticsearch:
@@ -51,6 +52,7 @@ output:
   #     certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
   #     # ca_trusted_fingerprint: D633B648E805E0C5099928D9FEFD3E8F513C5CCF
   #     verification_mode: "certificate"
+  #   index: "logs"
    
 setup:      
   ilm.overwrite: true
