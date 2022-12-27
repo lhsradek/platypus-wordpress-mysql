@@ -1,8 +1,8 @@
 ###################### Metricbeat Configuration #######################
 
-# http.enabled: true
-# http.port: ${MONITOR_PORT}
-# http.host: "0.0.0.0"
+http.enabled: true
+http.port: ${MONITOR_PORT}
+http.host: "0.0.0.0"
 
 monitoring:
   enabled: false
@@ -22,22 +22,22 @@ processors:
       tags: ["${STAGE}"]
       target: "environment"
   - add_tags:
-      tags: ["${APP_HOST}-${APP_ID}"]
+      tags: ["${APP_NICK}-${APP_ID}"]
       target: "app.id"
 
-inputs:
-  - type: system/metrics
-    data_stream.namespace: default
-    use_output: default
-    streams:
-      - metricset: cpu
-        data_stream.dataset: system.cpu
-      - metricset: memory
-        data_stream.dataset: system.memory
-      - metricset: network
-        data_stream.dataset: system.network
-      # - metricset: filesystem
-      #   data_stream.dataset: system.filesystem
+# inputs:
+#   - type: system/metrics
+#     data_stream.namespace: default
+#     use_output: default
+#     streams:
+#       - metricset: cpu
+#         data_stream.dataset: system.cpu
+#       - metricset: memory
+#         data_stream.dataset: system.memory
+#       - metricset: network
+#         data_stream.dataset: system.network
+#       - metricset: filesystem
+#         data_stream.dataset: system.filesystem
 
 output:
   # for /metricbeat -e setup --dashboards:
@@ -46,7 +46,6 @@ output:
     protocol: "https"
     username: "${ELASTICSEARCH_USERNAME}"
     password: "${ELASTICSEARCH_PASSWORD}"
-    timeout: 300s
     ssl:
       enabled: true
       certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
@@ -56,21 +55,20 @@ setup:
   template.settings:
     index.number_of_shards: 2
     index.codec: "best_compression"
-    source.enabled: false
+    _source.enabled: false
 
   elasticsearch:
     hosts: ["https://es01.${HOST_NICK}.${APP_NET}:${ES_PORT}"]
     protocol: "https"
     username: "${ELASTICSEARCH_USERNAME}"
     password: "${ELASTICSEARCH_PASSWORD}"
-    timeout: 300s
     ssl:
       enabled: true
       certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
       verification_mode: "${VERIFICATION_MODE}"
 
   kibana:
-    host: "${KIBANA_FLEET_HOST}"
+    host: "${KIBANA_HOST}"
     username: "${ELASTICSEARCH_USERNAME}"
     password: "${ELASTICSEARCH_PASSWORD}"
     ssl:
