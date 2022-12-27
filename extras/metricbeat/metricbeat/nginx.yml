@@ -8,7 +8,7 @@
 
   # Nginx hosts
   hosts: 
-    - "http://webwp"
+    - "http://${APP_HOST}"
 
   # Path to server status. Default nginx_status
   server_status_path: "nginx_status"
