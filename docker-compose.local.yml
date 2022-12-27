@@ -245,9 +245,9 @@ services:
     user: root
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
-      - /proc:/hostfs/proc:ro
-      - /:/hostfs:ro
+      # - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      # - /proc:/hostfs/proc:ro
+      # - /:/hostfs:ro
       - ./certs/:/usr/share/metricbeat/certs/
       - ./extras/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
       - ./extras/metricbeat/metricbeat:/root/bin
@@ -296,7 +296,7 @@ services:
 #       # local network:
 #       - intnet
 #     # ports:
-#     #   - ${APM_PORT}:${APM_PORT}
+#     #   - 8201:8201
 #     #   - ${FLEET_SERVER_PORT}:${FLEET_SERVER_PORT}
 #     # https://www.elastic.co/guide/en/fleet/current/agent-environment-variables.html
 #     environment:
