@@ -86,11 +86,11 @@ services:
       - WORDPRESS_DB_PASSWORD=${WP_DB_PASSWORD}
       - |
         WORDPRESS_CONFIG_EXTRA=
-        define( 'MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL ); 
         define( 'WP_HOME', "${WP_HOME}" );
         define( 'WP_SITEURL', "${WP_HOME}" );
         define( 'WP_ENVIRONMENT_TYPE', "${ENVIRONMENT_TYPE}" );
         define( 'WP_REDIS_HOST', "redis" );
+    #define( 'MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL ); 
     volumes:
       - ./extras/php/phpSettings.conf:/usr/local/etc/php-fpm.d/zzz-phpSettings.conf
       - ./certs/ca.crt:/var/www/html/wp-includes/certificates/rootCA.crt:ro
@@ -247,7 +247,7 @@ services:
     hostname: "metricbeat.${APP_HOST}"
     networks:
       - default
-      # - intnet
+      - intnet
     # ports:
     #   - ${MONITOR_PORT}:5066
     user: root
@@ -276,6 +276,9 @@ services:
       - KIBANA_HOST=${KIBANA_HOST}
       - STAGE=${STAGE}
       - VERIFICATION_MODE=${VERIFICATION_MODE}
+      - WP_DB_ROOT_PASSWORD=${WP_DB_ROOT_PASSWORD}
+      - WP_DB_DATABASE=${WP_DB_DATABASE}
+      - WP_DB_USER=${WP_DB_USER}
       - WP_DB_PASSWORD=${WP_DB_PASSWORD}
     labels:
       - "traefik.enable=true"

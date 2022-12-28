@@ -9,6 +9,9 @@
 rm -f /usr/share/metricbeat/modules.d/beat-xpack.yml
 rm -f /usr/share/metricbeat/modules.d/beat-xpack.yml.disabled
 cp /root/bin/beat-xpack.yml /usr/share/metricbeat/modules.d/beat-xpack.yml
+rm -f /usr/share/metricbeat/modules.d/mysql.yml
+rm -f /usr/share/metricbeat/modules.d/mysql.yml.disabled
+cp /root/bin/mysql.yml /usr/share/metricbeat/modules.d/mysql.yml
 rm -f /usr/share/metricbeat/modules.d/nginx.yml
 rm -f /usr/share/metricbeat/modules.d/nginx.yml.disabled
 cp /root/bin/nginx.yml /usr/share/metricbeat/modules.d/nginx.yml
