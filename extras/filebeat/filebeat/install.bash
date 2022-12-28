@@ -9,4 +9,7 @@
 rm -f /usr/share/filebeat/modules.d/nginx.yml
 rm -f /usr/share/filebeat/modules.d/nginx.yml.disabled
 cp /root/bin/nginx.yml /usr/share/filebeat/modules.d/nginx.yml
+rm -f /usr/share/filebeat/modules.d/mysql.yml
+rm -f /usr/share/filebeat/modules.d/mysql.yml.disabled
+cp /root/bin/mysql.yml /usr/share/filebeat/modules.d/mysql.yml
 chown root.root /usr/share/filebeat/modules.d/*

@@ -276,6 +276,7 @@ services:
       - KIBANA_HOST=${KIBANA_HOST}
       - STAGE=${STAGE}
       - VERIFICATION_MODE=${VERIFICATION_MODE}
+      - WP_DB_PASSWORD=${WP_DB_PASSWORD}
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=${DOCKER_NETWORK}"
