@@ -18,4 +18,7 @@ cp /root/bin/nginx.yml /usr/share/metricbeat/modules.d/php_fpm.yml
 rm -f /usr/share/metricbeat/modules.d/system.yml
 rm -f /usr/share/metricbeat/modules.d/system.yml.disabled
 cp /root/bin/system.yml /usr/share/metricbeat/modules.d/system.yml
+rm -f /usr/share/metricbeat/modules.d/docker.yml
+rm -f /usr/share/metricbeat/modules.d/docker.yml.disabled
+cp /root/bin/docker.yml /usr/share/metricbeat/modules.d/docker.yml
 chown root.root /usr/share/metricbeat/modules.d/*
