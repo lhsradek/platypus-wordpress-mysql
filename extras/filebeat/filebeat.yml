@@ -21,6 +21,12 @@ processors:
       tags: ["${APP_NICK}-${APP_ID}"]
       target: "app.id"
 
+instrumentation:
+  enabled: true
+  environment: "${STAGE}"
+  hosts: ["${ELASTIC_APM_SERVER_URL}"]
+  api_key: "${ELASTIC_APM_API_KEY}"
+
 output:
   # for provisioning:
   logstash:
