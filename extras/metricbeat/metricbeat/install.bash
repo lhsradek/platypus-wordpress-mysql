@@ -18,6 +18,9 @@ cp /root/bin/nginx.yml /usr/share/metricbeat/modules.d/nginx.yml
 rm -f /usr/share/metricbeat/modules.d/php_fpm.yml
 rm -f /usr/share/metricbeat/modules.d/php_fpm.yml.disabled
 cp /root/bin/nginx.yml /usr/share/metricbeat/modules.d/php_fpm.yml
+rm -f /usr/share/metricbeat/modules.d/redis.yml
+rm -f /usr/share/metricbeat/modules.d/redis.disabled
+cp /root/bin/redis.yml /usr/share/metricbeat/modules.d/redis.yml
 rm -f /usr/share/metricbeat/modules.d/system.yml
 rm -f /usr/share/metricbeat/modules.d/system.yml.disabled
 cp /root/bin/system.yml /usr/share/metricbeat/modules.d/system.yml
