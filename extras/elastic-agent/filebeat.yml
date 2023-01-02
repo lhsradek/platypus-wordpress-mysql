@@ -24,7 +24,7 @@ output:
   # for provisioning:
   logstash:
     enabled: true
-    hosts: ["logstash.${HOST_NICK}.${APP_NET}:5045"]
+    hosts: ["${LOGSTASH_HOST}"]
     timeout: 20s
     ssl:
       # certificate_authorities: ["${ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES}"]
