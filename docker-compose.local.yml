@@ -198,7 +198,6 @@ services:
     #   - ${MONITOR_PORT}:5066
     user: root
     volumes:
-      # - /var/run/docker.sock:/var/run/docker.sock
       - ./certs/:/usr/share/filebeat/certs/
       - ./extras/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - ./extras/filebeat/filebeat:/root/bin
