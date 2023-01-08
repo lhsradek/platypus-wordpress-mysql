@@ -229,15 +229,15 @@ services:
       - LOGSTASH_HOST=${LOGSTASH_HOST}
       - STAGE=${STAGE}
       - VERIFICATION_MODE=${VERIFICATION_MODE}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=${DOCKER_NETWORK}"
-      - "traefik.http.routers.webwp-filebeat-${NUM}.rule=Host(`filebeat.${APP_HOST}`)"
-      - "traefik.http.routers.webwp-filebeat-${NUM}.entrypoints=http-${MONITOR_PORT}"
-      - "traefik.http.routers.webwp-filebeat-${NUM}.tls=false"
-      - "traefik.http.routers.webwp-filebeat-${NUM}.service=webwp-filebeat-${APP_ID}"
-      - "traefik.http.services.webwp-filebeat-${APP_ID}.loadbalancer.server.port=${MONITOR_PORT}"
-      - "traefik.http.services.webwp-filebeat-${APP_ID}.loadbalancer.server.scheme=http"
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.docker.network=${DOCKER_NETWORK}"
+    #   - "traefik.http.routers.webwp-filebeat-${NUM}.rule=Host(`filebeat.${APP_HOST}`)"
+    #   - "traefik.http.routers.webwp-filebeat-${NUM}.entrypoints=http-${MONITOR_PORT}"
+    #   - "traefik.http.routers.webwp-filebeat-${NUM}.tls=false"
+    #   - "traefik.http.routers.webwp-filebeat-${NUM}.service=webwp-filebeat-${APP_ID}"
+    #   - "traefik.http.services.webwp-filebeat-${APP_ID}.loadbalancer.server.port=${MONITOR_PORT}"
+    #   - "traefik.http.services.webwp-filebeat-${APP_ID}.loadbalancer.server.scheme=http"
 
 #
 # === Metricbeat ===
@@ -257,13 +257,12 @@ services:
       - intnet
     # ports:
     #   - ${MONITOR_PORT}:5066
-    extra_hosts:
-      - "host.docker.internal:172.17.0.1"
     user: root
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
-      - /proc:/hostfs/proc:ro
+      # - /var/run/docker.sock:/var/run/docker.sock
+      # - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      # - /proc:/hostfs/proc:ro
+      # - /:/hostfs:ro
       - ./certs:/usr/share/metricbeat/certs
       - ./extras/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
       - ./extras/metricbeat/metricbeat:/root/bin
@@ -294,15 +293,15 @@ services:
       - WP_DB_DATABASE=${WP_DB_DATABASE}
       - WP_DB_USER=${WP_DB_USER}
       - WP_DB_PASSWORD=${WP_DB_PASSWORD}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=${DOCKER_NETWORK}"
-      - "traefik.http.routers.webwp-metricbeat-${NUM}.rule=Host(`metricbeat.${APP_HOST}`)"
-      - "traefik.http.routers.webwp-metricbeat-${NUM}.entrypoints=http-${MONITOR_PORT}"
-      - "traefik.http.routers.webwp-metricbeat-${NUM}.tls=false"
-      - "traefik.http.routers.webwp-metricbeat-${NUM}.service=webwp-metricbeat-${APP_ID}"
-      - "traefik.http.services.webwp-metricbeat-${APP_ID}.loadbalancer.server.port=${MONITOR_PORT}"
-      - "traefik.http.services.webwp-metricbeat-${APP_ID}.loadbalancer.server.scheme=http"
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.docker.network=${DOCKER_NETWORK}"
+    #   - "traefik.http.routers.webwp-metricbeat-${NUM}.rule=Host(`metricbeat.${APP_HOST}`)"
+    #   - "traefik.http.routers.webwp-metricbeat-${NUM}.entrypoints=http-${MONITOR_PORT}"
+    #   - "traefik.http.routers.webwp-metricbeat-${NUM}.tls=false"
+    #   - "traefik.http.routers.webwp-metricbeat-${NUM}.service=webwp-metricbeat-${APP_ID}"
+    #   - "traefik.http.services.webwp-metricbeat-${APP_ID}.loadbalancer.server.port=${MONITOR_PORT}"
+    #   - "traefik.http.services.webwp-metricbeat-${APP_ID}.loadbalancer.server.scheme=http"
 
 # === Elastic Agent as fleet server ===
 #
