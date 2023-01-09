@@ -91,7 +91,7 @@ services:
         define( 'WP_SITEURL', "${WP_HOME}" );
         define( 'WP_ENVIRONMENT_TYPE', "${ENVIRONMENT_TYPE}" );
         define( 'WP_REDIS_HOST', "redis" );
-    #define( 'MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL ); 
+        define( 'MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL ); 
     volumes:
       - ./extras/php/phpSettings.conf:/usr/local/etc/php-fpm.d/zzz-phpSettings.conf
       - ./certs/ca.crt:/var/www/html/wp-includes/certificates/rootCA.crt:ro
