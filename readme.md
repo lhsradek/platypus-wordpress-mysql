@@ -47,6 +47,11 @@ Example of connection:
 |┌172.18.0.3:40928                      |    =        5   |     1652  |  CLOSE  |  eth0
 |└172.18.0.2:9000                       |    =        5   |     4388  |  CLOSE  |  eth0
 
+
+<p>
+<img src="https://github.com/lhsradek/platypus-wordpress-mysql/blob/main/png/Platypus_exposes_data_on_the_web_using_Wordpress.png" width="300px" height="300px"/>
+</p>
+
 -----
 
 * https://www.facebook.com/radek.kadner/
