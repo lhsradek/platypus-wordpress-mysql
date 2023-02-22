@@ -50,7 +50,7 @@ Example of connection:
 -----
 
 <p>
-<img src="https://github.com/lhsradek/platypus-wordpress-mysql/blob/main/png/Platypus_exposes_data_on_the_web_using_Wordpress.png" width="300px" height="300px"/>
+<img src="https://github.com/lhsradek/platypus-wordpress-mysql/blob/main/png/Platypus_exposes_data_on_the_web_using_Wordpress.png" width="400px" height="400px"/>
 </p>
 
 -----
